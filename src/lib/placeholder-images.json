@@ -1,3 +1,10 @@
 {
-  "placeholderImages": []
+  "placeholderImages": [
+    {
+      "id": "hero-1",
+      "description": "A serene, calming landscape with a path leading towards a light",
+      "imageUrl": "https://images.unsplash.com/photo-1615134732800-ca7ef7a3388c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxzZXJlbmUlMjBsYW5kc2NhcGV8ZW58MHx8fHwxNzY1MTQ5OTExfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "serene landscape"
+    }
+  ]
 }

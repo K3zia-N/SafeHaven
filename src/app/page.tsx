@@ -1,3 +1,106 @@
+import Image from 'next/image';
+import Link from 'next/link';
+import { ArrowRight, HeartHand, ShieldAlert, Gavel, Users, FileText, LocateFixed } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/card';
+import { PlaceHolderImages } from '@/lib/placeholder-images';
+
+const features = [
+  {
+    title: 'Report an Incident',
+    description: 'Safely and anonymously document an incident. Your voice matters.',
+    href: '/report-incident',
+    icon: FileText,
+    cta: 'Start Report',
+  },
+  {
+    title: 'Emergency Guidance',
+    description: 'Immediate steps to take and emergency contacts for critical situations.',
+    href: '/emergency',
+    icon: ShieldAlert,
+    cta: 'Get Help Now',
+  },
+  {
+    title: 'Find Support',
+    description: 'Connect with local shelters, counseling, and support groups.',
+    href: '/find-support',
+    icon: HeartHand,
+    cta: 'Find Resources',
+  },
+  {
+    title: 'Know Your Rights',
+    description: 'Learn about your legal rights and the procedures for justice.',
+    href: '/legal-rights',
+    icon: Gavel,
+    cta: 'Learn More',
+  },
+  {
+    title: 'Safe Locations',
+    description: 'Find nearby police stations, hospitals, and other safe places.',
+    href: '/safe-locations',
+    icon: LocateFixed,
+    cta: 'Find Locations',
+  },
+   {
+    title: 'Community Board',
+    description: 'Share and connect with others in a safe, anonymous space.',
+    href: '/community',
+    icon: Users,
+    cta: 'Visit Board',
+  },
+];
+
+const heroImage = PlaceHolderImages.find(img => img.id === "hero-1");
+
 export default function Home() {
-  return <></>;
+  return (
+    <div className="flex flex-col gap-8 md:gap-12 animate-in fade-in-50">
+      <section className="relative w-full h-80 rounded-xl overflow-hidden bg-primary/20">
+        {heroImage && (
+            <Image
+                src={heroImage.imageUrl}
+                alt={heroImage.description}
+                fill
+                priority
+                className="object-cover"
+                data-ai-hint={heroImage.imageHint}
+            />
+        )}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+        <div className="relative h-full flex flex-col justify-end p-6 md:p-8 text-white">
+          <h1 className="text-4xl md:text-5xl font-bold tracking-tight">You are not alone.</h1>
+          <p className="mt-2 max-w-2xl text-lg text-primary-foreground/90">
+            SafeHaven is a secure and anonymous platform providing support, resources, and a voice for survivors of gender-based violence.
+          </p>
+        </div>
+      </section>
+
+      <section>
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {features.map((feature) => (
+            <Card key={feature.title} className="flex flex-col transition-transform transform hover:-translate-y-1 hover:shadow-xl">
+              <CardHeader>
+                <div className="flex items-center gap-4">
+                    <div className="bg-accent/20 p-3 rounded-lg">
+                        <feature.icon className="size-6 text-primary" />
+                    </div>
+                    <CardTitle>{feature.title}</CardTitle>
+                </div>
+              </CardHeader>
+              <CardContent className="flex-grow">
+                <CardDescription>{feature.description}</CardDescription>
+              </CardContent>
+              <CardFooter>
+                <Button asChild className="w-full" variant="secondary">
+                  <Link href={feature.href}>
+                    {feature.cta} <ArrowRight className="ml-2 size-4" />
+                  </Link>
+                </Button>
+              </CardFooter>
+            </Card>
+          ))}
+        </div>
+      </section>
+    </div>
+  );
 }
