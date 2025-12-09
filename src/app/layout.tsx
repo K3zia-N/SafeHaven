@@ -5,6 +5,7 @@ import {AppSidebar} from '@/components/layout/app-sidebar';
 import {Header} from '@/components/layout/header';
 import {Toaster} from '@/components/ui/toaster';
 import { cn } from '@/lib/utils';
+import { ZindukaBot } from '@/components/chatbot/ZindukaBot';
 
 export const metadata: Metadata = {
   title: 'SafeHaven',
@@ -34,6 +35,7 @@ export default function RootLayout({
           </SidebarInset>
         </SidebarProvider>
         <Toaster />
+        <ZindukaBot />
       </body>
     </html>
   );

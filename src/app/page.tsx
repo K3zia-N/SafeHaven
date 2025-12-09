@@ -1,6 +1,6 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import { ArrowRight, HeartHand, ShieldAlert, Gavel, Users, FileText, LocateFixed } from 'lucide-react';
+import { ArrowRight, HeartHandshake, ShieldAlert, Gavel, Users, FileText, LocateFixed, MessageSquareHeart } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/card';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
@@ -24,7 +24,7 @@ const features = [
     title: 'Find Support',
     description: 'Connect with local shelters, counseling, and support groups.',
     href: '/find-support',
-    icon: HeartHand,
+    icon: HeartHandshake,
     cta: 'Find Resources',
   },
   {
@@ -50,9 +50,18 @@ const features = [
   },
 ];
 
+const didYouKnowFacts = [
+    "In Kenya, 45% of women and girls aged 15-49 have experienced physical violence since age 15.",
+    "The 2022 Kenya Demographic and Health Survey indicates that 1 in 5 young women have experienced sexual violence.",
+    "Many GBV cases in Kenya go unreported due to stigma, fear of retaliation, or lack of faith in the justice system. Anonymous reporting can help change this.",
+    "Economic abuse, where a partner controls finances to limit independence, is a significant and often hidden form of GBV."
+];
+
 const heroImage = PlaceHolderImages.find(img => img.id === "hero-1");
 
 export default function Home() {
+  const randomFact = didYouKnowFacts[Math.floor(Math.random() * didYouKnowFacts.length)];
+
   return (
     <div className="flex flex-col gap-8 md:gap-12 animate-in fade-in-50">
       <section className="relative w-full h-80 rounded-xl overflow-hidden bg-primary/20">
@@ -100,6 +109,18 @@ export default function Home() {
             </Card>
           ))}
         </div>
+      </section>
+
+      <section>
+        <Card className="bg-accent/30 border-accent">
+            <CardHeader>
+                <CardTitle>Did You Know?</CardTitle>
+                <CardDescription>Insights on GBV cases in Kenya.</CardDescription>
+            </CardHeader>
+            <CardContent>
+                <p className="text-muted-foreground italic">"{randomFact}"</p>
+            </CardContent>
+        </Card>
       </section>
     </div>
   );

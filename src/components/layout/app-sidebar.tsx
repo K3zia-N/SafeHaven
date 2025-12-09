@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import {
-  HeartHand,
+  HeartHandshake,
   ShieldAlert,
   Gavel,
   LocateFixed,
@@ -30,7 +30,7 @@ const menuItems = [
 
 const toolsItems = [
     { href: '/report-incident', label: 'Report Incident', icon: FileText },
-    { href: '/find-support', label: 'Find Support', icon: HeartHand },
+    { href: '/find-support', label: 'Find Support', icon: HeartHandshake },
     { href: '/safe-locations', label: 'Safe Locations', icon: LocateFixed },
 ]
 
