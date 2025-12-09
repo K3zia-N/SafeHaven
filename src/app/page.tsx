@@ -1,9 +1,20 @@
+
+'use client';
+
 import Image from 'next/image';
 import Link from 'next/link';
 import { ArrowRight, HeartHandshake, ShieldAlert, Gavel, Users, FileText, LocateFixed, MessageSquareHeart } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/card';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel"
+import { useState, useEffect } from 'react';
 
 const features = [
   {
@@ -60,8 +71,15 @@ const didYouKnowFacts = [
 const heroImage = PlaceHolderImages.find(img => img.id === "hero-1");
 
 export default function Home() {
-  const randomFact = didYouKnowFacts[Math.floor(Math.random() * didYouKnowFacts.length)];
+  const [isMounted, setIsMounted] = useState(false);
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
+  if (!isMounted) {
+    return null;
+  }
+  
   return (
     <div className="flex flex-col gap-8 md:gap-12 animate-in fade-in-50">
       <section className="relative w-full h-80 rounded-xl overflow-hidden bg-primary/20">
@@ -111,16 +129,32 @@ export default function Home() {
         </div>
       </section>
 
-      <section>
-        <Card className="bg-accent/30 border-accent">
-            <CardHeader>
-                <CardTitle>Did You Know?</CardTitle>
-                <CardDescription>Insights on GBV cases in Kenya.</CardDescription>
-            </CardHeader>
-            <CardContent>
-                <p className="text-muted-foreground italic">"{randomFact}"</p>
-            </CardContent>
-        </Card>
+      <section className="flex flex-col items-center justify-center w-full">
+        <Carousel
+          opts={{
+            align: "start",
+            loop: true,
+          }}
+          className="w-full max-w-4xl"
+        >
+          <CarouselContent>
+            {didYouKnowFacts.map((fact, index) => (
+              <CarouselItem key={index}>
+                <Card className="bg-accent/30 border-accent h-full">
+                    <CardHeader>
+                        <CardTitle>Did You Know?</CardTitle>
+                        <CardDescription>Insights on GBV cases in Kenya.</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                        <p className="text-muted-foreground italic">"{fact}"</p>
+                    </CardContent>
+                </Card>
+              </CarouselItem>
+            ))}
+          </CarouselContent>
+          <CarouselPrevious />
+          <CarouselNext />
+        </Carousel>
       </section>
     </div>
   );
