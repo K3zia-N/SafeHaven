@@ -37,8 +37,8 @@
     --sidebar-accent-foreground: 217 91% 60%;
     --sidebar-border: 214.3 31.8% 91.4%;
     --sidebar-ring: 217.2 91.2% 59.8%;
-    --indigo: 318 75% 16%;
-    --indigo-foreground: 0 0% 100%;
+    --brand-purple: 319 75% 16%;
+    --brand-purple-foreground: 0 0% 100%;
   }
   .dark {
     --background: 224 71% 10%;
@@ -73,8 +73,8 @@
     --sidebar-accent-foreground: 210 40% 98%;
     --sidebar-border: 217 32% 22%;
     --sidebar-ring: 217.2 91.2% 59.8%;
-    --indigo: 318 75% 16%;
-    --indigo-foreground: 0 0% 100%;
+    --brand-purple: 319 75% 16%;
+    --brand-purple-foreground: 0 0% 100%;
   }
 }
 
