@@ -1,6 +1,14 @@
 'use client'
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { usePathname } from "next/navigation";
+import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Globe } from "lucide-react";
 
 const pageTitles: { [key: string]: string } = {
     '/': 'Dashboard',
@@ -12,6 +20,24 @@ const pageTitles: { [key: string]: string } = {
     '/community': 'Anonymous Community Board',
 };
 
+function LanguageSelector() {
+    return (
+        <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="icon">
+                    <Globe className="h-5 w-5" />
+                    <span className="sr-only">Select Language</span>
+                </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+                <DropdownMenuItem>English</DropdownMenuItem>
+                <DropdownMenuItem>Swahili</DropdownMenuItem>
+                <DropdownMenuItem>Kikuyu</DropdownMenuItem>
+            </DropdownMenuContent>
+        </DropdownMenu>
+    );
+}
+
 
 export function Header() {
     const pathname = usePathname();
@@ -20,7 +46,10 @@ export function Header() {
     return (
         <header className="sticky top-0 z-10 flex h-16 shrink-0 items-center gap-4 border-b bg-background/80 px-4 backdrop-blur-sm sm:px-6">
             <SidebarTrigger className="md:hidden" />
-            <h1 className="text-lg font-semibold md:text-xl">{title}</h1>
+            <div className="flex-1">
+                <h1 className="text-lg font-semibold md:text-xl">{title}</h1>
+            </div>
+            <LanguageSelector />
         </header>
     );
 }
