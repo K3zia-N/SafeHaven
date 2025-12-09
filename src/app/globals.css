@@ -37,7 +37,7 @@
     --sidebar-accent-foreground: 217 91% 60%;
     --sidebar-border: 214.3 31.8% 91.4%;
     --sidebar-ring: 217.2 91.2% 59.8%;
-    --indigo: 226 77% 49%;
+    --indigo: 318 75% 16%;
     --indigo-foreground: 0 0% 100%;
   }
   .dark {
@@ -73,7 +73,7 @@
     --sidebar-accent-foreground: 210 40% 98%;
     --sidebar-border: 217 32% 22%;
     --sidebar-ring: 217.2 91.2% 59.8%;
-    --indigo: 226 77% 60%;
+    --indigo: 318 75% 16%;
     --indigo-foreground: 0 0% 100%;
   }
 }
