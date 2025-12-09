@@ -20,11 +20,17 @@ const FindSafeLocationsInputSchema = z.object({
 });
 export type FindSafeLocationsInput = z.infer<typeof FindSafeLocationsInputSchema>;
 
+const LocationSchema = z.object({
+    name: z.string().describe("The name of the safe location (e.g., 'Anytown Police Department')."),
+    address: z.string().describe("The full street address of the location."),
+    description: z.string().describe("A brief description of the location (e.g., 'Local police station').")
+});
+
 const FindSafeLocationsOutputSchema = z.object({
   safeLocations: z
-    .string()
+    .array(LocationSchema)
     .describe(
-      'A list of nearby safe locations, including addresses and descriptions.'
+      'An array of nearby safe locations, including names, addresses, and descriptions.'
     ),
 });
 export type FindSafeLocationsOutput = z.infer<typeof FindSafeLocationsOutputSchema>;
@@ -37,7 +43,7 @@ const findSafeLocationsPrompt = ai.definePrompt({
   name: 'findSafeLocationsPrompt',
   input: {schema: FindSafeLocationsInputSchema},
   output: {schema: FindSafeLocationsOutputSchema},
-  prompt: `You are an AI assistant designed to help users find safe locations near them. The user will provide their current location, and you should find a list of nearby safe locations such as police stations, fire stations, and hospitals. Provide the address and a brief description of each location.
+  prompt: `You are an AI assistant designed to help users find safe locations near them. The user will provide their current location, and you should find a list of nearby safe locations such as police stations, fire stations, and hospitals. Return the results as a structured array of objects, each containing a name, address, and description.
 
 User Location: {{{userLocation}}}`,
 });

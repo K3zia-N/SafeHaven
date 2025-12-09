@@ -6,11 +6,11 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { findSafeLocations, FindSafeLocationsOutput } from '@/ai/flows/safe-location-finder';
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { Loader2, Sparkles, MapPin, Search } from 'lucide-react';
+import { Loader2, Sparkles, MapPin, Search, Navigation } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 
 const formSchema = z.object({
@@ -40,6 +40,11 @@ export function SafeLocationsFinder() {
     }
     setIsLoading(false);
   }
+
+  const handleNavigate = (address: string) => {
+    const googleMapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}`;
+    window.open(googleMapsUrl, '_blank');
+  };
 
   return (
     <div className="space-y-6">
@@ -93,19 +98,40 @@ export function SafeLocationsFinder() {
         </div>
       )}
 
-      {result && (
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2"><Sparkles className="text-primary" /> Safe Locations Found</CardTitle>
-            <CardDescription>Here are some nearby safe locations. We recommend verifying hours and services directly.</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4 whitespace-pre-line text-sm text-foreground">
-                {result.safeLocations}
+      {result && result.safeLocations && result.safeLocations.length > 0 && (
+        <div className='space-y-4'>
+            <div className='flex items-center gap-2'>
+                <Sparkles className="text-primary" />
+                <h2 className='text-xl font-semibold'>Safe Locations Found</h2>
             </div>
-          </CardContent>
-        </Card>
+            <p className="text-muted-foreground">Here are some nearby safe locations. We recommend verifying hours and services directly.</p>
+            <div className="grid gap-4 md:grid-cols-2">
+                {result.safeLocations.map((location, index) => (
+                <Card key={index}>
+                    <CardHeader>
+                        <CardTitle>{location.name}</CardTitle>
+                        <CardDescription>{location.description}</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                        <p className="text-sm text-muted-foreground">{location.address}</p>
+                    </CardContent>
+                    <CardFooter>
+                        <Button onClick={() => handleNavigate(location.address)} className='w-full'>
+                            <Navigation className="mr-2 h-4 w-4" />
+                            Navigate on Google Maps
+                        </Button>
+                    </CardFooter>
+                </Card>
+                ))}
+            </div>
+        </div>
       )}
+       {result && (!result.safeLocations || result.safeLocations.length === 0) && (
+        <Alert>
+            <AlertTitle>No Locations Found</AlertTitle>
+            <AlertDescription>We couldn't find any safe locations based on your search. Please try a different location or check your spelling.</AlertDescription>
+        </Alert>
+       )}
     </div>
   );
 }
