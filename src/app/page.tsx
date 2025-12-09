@@ -99,7 +99,7 @@ export default function Home() {
   
   return (
     <div className="flex flex-col gap-8 md:gap-12 animate-in fade-in-50">
-      <section className="relative w-full h-96 rounded-xl overflow-hidden bg-primary/20">
+      <section className="relative w-full h-96 -mx-4 sm:-mx-6 lg:-mx-8">
         {heroImage && (
             <Image
                 src={heroImage.imageUrl}
@@ -111,7 +111,7 @@ export default function Home() {
             />
         )}
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-        <div className="relative h-full flex flex-col justify-end p-6 md:p-8 text-white">
+        <div className="relative h-full flex flex-col justify-end p-6 md:p-8 text-white container">
           <h1 className="text-4xl md:text-5xl font-bold tracking-tight">{t('heroTitle')}</h1>
           <p className="mt-2 max-w-2xl text-lg text-primary-foreground/90">
             {t('heroSubtitle')}

@@ -35,8 +35,10 @@ export default function RootLayout({
             <TooltipProvider>
               <div className="flex flex-col min-h-screen">
                 <Header />
-                <main className="flex-1 p-4 sm:p-6 lg:p-8">
-                  {children}
+                <main className="flex-1">
+                  <div className="container py-4 sm:py-6 lg:py-8">
+                    {children}
+                  </div>
                 </main>
                 <Footer />
               </div>
