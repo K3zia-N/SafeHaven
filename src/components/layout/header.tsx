@@ -20,12 +20,6 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import {
-    Tooltip,
-    TooltipContent,
-    TooltipTrigger,
-} from "@/components/ui/tooltip"
-
 import { useLanguage } from "./language-provider";
 import type { Language } from "@/lib/translations";
 import { useLoading } from './loading-provider';
@@ -48,7 +42,7 @@ const navItems = [
     { href: '/community', labelKey: 'feature_community', icon: Users },
 ];
 
-const LoadingLink = ({ href, children, className }: { href: string, children: ReactNode, className?: string }) => {
+const LoadingLink = ({ href, children, className, variant, size = 'default' }: { href: string, children: ReactNode, className?: string, variant?: "default" | "destructive" | "outline" | "secondary" | "ghost" | "link" | null, size?: "default" | "sm" | "lg" | "icon" | null }) => {
     const { setIsLoading } = useLoading();
     const pathname = usePathname();
 
@@ -59,9 +53,11 @@ const LoadingLink = ({ href, children, className }: { href: string, children: Re
     };
 
     return (
-        <Link href={href} onClick={handleClick} className={className}>
-            {children}
-        </Link>
+        <Button asChild variant={variant} size={size} className={className}>
+            <Link href={href} onClick={handleClick}>
+                {children}
+            </Link>
+        </Button>
     );
 };
 
@@ -96,7 +92,7 @@ function QuickExitButton() {
 
     return (
         <Button variant="destructive" size="sm" onClick={handleExit}>
-            <LogOut className="mr-2" />
+            <LogOut className="mr-2 h-4 w-4" />
             Quick Exit
         </Button>
     );
@@ -109,39 +105,34 @@ export function Header() {
 
     return (
         <header className="sticky top-0 z-40 w-full border-b bg-background">
-            <div className="container flex h-16 items-center space-x-4 sm:justify-between sm:space-x-0">
-                <div className="flex gap-6 md:gap-10">
-                    <LoadingLink href="/" className="flex items-center space-x-2">
+            <div className="container grid h-16 grid-cols-3 items-center">
+                <div className="flex items-center justify-start">
+                    <Link href="/" className="flex items-center space-x-2">
                         <SafeHavenLogo />
                         <span className="inline-block font-bold">SafeHaven</span>
-                    </LoadingLink>
+                    </Link>
                 </div>
 
-                <nav className="hidden md:flex gap-2">
+                <nav className="hidden md:flex justify-center gap-2">
                     {navItems.map((item) => (
-                         <Tooltip key={item.href}>
-                            <TooltipTrigger asChild>
-                                <LoadingLink
-                                    href={item.href}
-                                >
-                                    <Button variant={pathname === item.href ? "secondary" : "ghost"} size="icon">
-                                        <item.icon className="h-5 w-5" />
-                                        <span className="sr-only">{t(item.labelKey as any)}</span>
-                                    </Button>
-                                </LoadingLink>
-                            </TooltipTrigger>
-                            <TooltipContent>
-                                <p>{t(item.labelKey as any)}</p>
-                            </TooltipContent>
-                        </Tooltip>
+                         <LoadingLink
+                            key={item.href}
+                            href={item.href}
+                            variant={pathname === item.href ? "secondary" : "ghost"}
+                            size="sm"
+                            className="group transition-all duration-300 ease-in-out hover:bg-primary hover:text-primary-foreground"
+                        >
+                            <item.icon className="h-5 w-5 shrink-0" />
+                            <span className="max-w-0 overflow-hidden whitespace-nowrap transition-all duration-300 ease-in-out group-hover:max-w-xs group-hover:ml-2">
+                                {t(item.labelKey as any)}
+                            </span>
+                        </LoadingLink>
                     ))}
                 </nav>
 
-                <div className="flex flex-1 items-center justify-end space-x-4">
-                    <div className="flex items-center gap-2">
-                        <LanguageSelector />
-                        <QuickExitButton />
-                    </div>
+                <div className="flex items-center justify-end space-x-2">
+                    <LanguageSelector />
+                    <QuickExitButton />
                 </div>
             </div>
         </header>
