@@ -14,7 +14,9 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel"
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
+import Autoplay from "embla-carousel-autoplay"
+
 
 const features = [
   {
@@ -72,6 +74,10 @@ const heroImage = PlaceHolderImages.find(img => img.id === "hero-1");
 
 export default function Home() {
   const [isMounted, setIsMounted] = useState(false);
+  const plugin = useRef(
+    Autoplay({ delay: 5000, stopOnInteraction: true, stopOnMouseEnter: true })
+  );
+
   useEffect(() => {
     setIsMounted(true);
   }, []);
@@ -131,6 +137,7 @@ export default function Home() {
 
       <section className="flex flex-col items-center justify-center w-full">
         <Carousel
+          plugins={[plugin.current]}
           opts={{
             align: "start",
             loop: true,
