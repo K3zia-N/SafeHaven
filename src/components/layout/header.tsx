@@ -8,7 +8,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Globe } from "lucide-react";
+import { Globe, LogOut } from "lucide-react";
 import { useLanguage } from "./language-provider";
 import type { Language } from "@/lib/translations";
 
@@ -46,6 +46,19 @@ function LanguageSelector() {
     );
 }
 
+function QuickExitButton() {
+    const handleExit = () => {
+        window.location.replace('https://www.google.com');
+    };
+
+    return (
+        <Button variant="destructive" size="sm" onClick={handleExit}>
+            <LogOut className="mr-2" />
+            Quick Exit
+        </Button>
+    );
+}
+
 
 export function Header() {
     const pathname = usePathname();
@@ -59,7 +72,10 @@ export function Header() {
             <div className="flex-1">
                  <h1 className="text-lg font-semibold md:text-xl">{pathname === '/' ? t('dashboardTitle') : title}</h1>
             </div>
-            <LanguageSelector />
+            <div className="flex items-center gap-2">
+                <LanguageSelector />
+                <QuickExitButton />
+            </div>
         </header>
     );
 }

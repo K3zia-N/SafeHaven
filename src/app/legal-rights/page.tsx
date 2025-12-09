@@ -1,6 +1,10 @@
+'use client'
+
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Gavel } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { useToast } from "@/hooks/use-toast";
+import { Gavel, Bookmark } from "lucide-react";
 
 const legalInfo = [
   {
@@ -26,6 +30,17 @@ const legalInfo = [
 ];
 
 export default function LegalRightsPage() {
+    const { toast } = useToast();
+
+    const handleSaveInfo = (info: {question: string, answer: string}) => {
+        // This is a placeholder for the actual save functionality
+        toast({
+            title: "Feature Coming Soon!",
+            description: "You will soon be able to save resources to your dashboard.",
+        });
+        console.log("Saving info:", info.question);
+    };
+
     return (
         <div className="max-w-4xl mx-auto animate-in fade-in-50">
             <Card>
@@ -44,8 +59,19 @@ export default function LegalRightsPage() {
                     <Accordion type="single" collapsible className="w-full">
                         {legalInfo.map((item, index) => (
                             <AccordionItem value={`item-${index}`} key={index}>
-                                <AccordionTrigger className="text-lg text-left hover:no-underline">
+                                <AccordionTrigger className="text-lg text-left hover:no-underline relative group pr-10">
                                     {item.question}
+                                    <Button 
+                                        variant="ghost" 
+                                        size="icon" 
+                                        className="absolute right-0 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity"
+                                        onClick={(e) => {
+                                            e.stopPropagation(); // prevent accordion from toggling
+                                            handleSaveInfo(item);
+                                        }}
+                                    >
+                                        <Bookmark className="size-4" />
+                                    </Button>
                                 </AccordionTrigger>
                                 <AccordionContent className="text-base text-muted-foreground prose">
                                     {item.answer}

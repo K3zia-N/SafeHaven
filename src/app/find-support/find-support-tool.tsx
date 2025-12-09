@@ -11,8 +11,9 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
-import { Loader2, Sparkles, MapPin, Search } from 'lucide-react';
+import { Loader2, Sparkles, MapPin, Search, Bookmark } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { useToast } from '@/hooks/use-toast';
 
 const formSchema = z.object({
   location: z.string().min(3, 'Please enter a valid location (e.g., city, zip code).'),
@@ -23,6 +24,7 @@ export function FindSupportTool() {
   const [result, setResult] = useState<ResourceReferralOutput | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const { toast } = useToast();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -41,6 +43,15 @@ export function FindSupportTool() {
       console.error(e);
     }
     setIsLoading(false);
+  }
+
+  const handleSaveResource = (resource: string) => {
+    // This is a placeholder for the actual save functionality
+    toast({
+        title: "Feature Coming Soon!",
+        description: "You will soon be able to save resources to your dashboard.",
+    });
+    console.log("Saving resource:", resource);
   }
 
   return (
@@ -112,12 +123,17 @@ export function FindSupportTool() {
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2"><Sparkles className="text-primary" /> AI-Powered Recommendations</CardTitle>
-            <CardDescription>Here are some resources we found based on your request.</CardDescription>
+            <CardDescription>Here are some resources we found based on your request. You can save them for later.</CardDescription>
           </CardHeader>
           <CardContent>
-            <ul className="list-disc space-y-2 pl-5">
+            <ul className="space-y-2">
               {result.resourceRecommendations.map((rec, index) => (
-                <li key={index} className="text-foreground">{rec}</li>
+                <li key={index} className="flex justify-between items-center p-2 rounded-md hover:bg-muted">
+                  <span className="text-foreground flex-1">{rec}</span>
+                  <Button variant="ghost" size="icon" onClick={() => handleSaveResource(rec)}>
+                    <Bookmark className="size-4" />
+                  </Button>
+                </li>
               ))}
             </ul>
           </CardContent>
