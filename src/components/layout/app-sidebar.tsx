@@ -24,22 +24,7 @@ import {
 import { Separator } from '../ui/separator';
 import { useLoading } from './loading-provider';
 import { ReactNode } from 'react';
-
-const menuItems = [
-  { href: '/', label: 'Dashboard', icon: LayoutDashboard },
-  { href: '/emergency', label: 'Emergency Guide', icon: ShieldAlert },
-];
-
-const toolsItems = [
-    { href: '/report-incident', label: 'Report Incident', icon: FileText },
-    { href: '/find-support', label: 'Find Support', icon: HeartHandshake },
-    { href: '/safe-locations', label: 'Safe Locations', icon: LocateFixed },
-]
-
-const resourcesItems = [
-    { href: '/legal-rights', label: 'Legal Rights', icon: Gavel },
-    { href: '/community', label: 'Community Board', icon: Users },
-]
+import { useLanguage } from './language-provider';
 
 const SafeHavenLogo = () => (
     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="text-primary-foreground">
@@ -67,6 +52,23 @@ const LoadingLink = ({ href, children }: { href: string, children: ReactNode }) 
 
 export function AppSidebar() {
   const pathname = usePathname();
+  const { t } = useLanguage();
+
+  const menuItems = [
+    { href: '/', labelKey: 'dashboardTitle', icon: LayoutDashboard },
+    { href: '/emergency', labelKey: 'feature_emergency', icon: ShieldAlert },
+  ];
+  
+  const toolsItems = [
+      { href: '/report-incident', labelKey: 'feature_report', icon: FileText },
+      { href: '/find-support', labelKey: 'feature_support', icon: HeartHandshake },
+      { href: '/safe-locations', labelKey: 'feature_locations', icon: LocateFixed },
+  ]
+  
+  const resourcesItems = [
+      { href: '/legal-rights', labelKey: 'feature_rights', icon: Gavel },
+      { href: '/community', labelKey: 'feature_community', icon: Users },
+  ]
 
   const renderMenuItems = (items: typeof menuItems) => items.map((item) => (
     <SidebarMenuItem key={item.href}>
@@ -74,11 +76,11 @@ export function AppSidebar() {
         asChild
         isActive={pathname === item.href}
         className="w-full"
-        tooltip={{ children: item.label }}
+        tooltip={{ children: t(item.labelKey as any) }}
       >
         <LoadingLink href={item.href}>
           <item.icon className="size-5" />
-          <span>{item.label}</span>
+          <span>{t(item.labelKey as any)}</span>
         </LoadingLink>
       </SidebarMenuButton>
     </SidebarMenuItem>
