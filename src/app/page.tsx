@@ -99,7 +99,7 @@ export default function Home() {
   
   return (
     <div className="flex flex-col gap-8 md:gap-12 animate-in fade-in-50">
-      <section className="relative w-full h-80 rounded-xl overflow-hidden bg-primary/20">
+      <section className="relative w-full h-96 rounded-xl overflow-hidden bg-primary/20">
         {heroImage && (
             <Image
                 src={heroImage.imageUrl}
@@ -158,7 +158,7 @@ export default function Home() {
           <CarouselContent>
             {didYouKnowFacts.map((fact, index) => (
               <CarouselItem key={index}>
-                <Card className="bg-accent/30 border-accent h-full">
+                <Card className="bg-accent/30 border-accent h-full min-h-[180px]">
                     <CardHeader>
                         <CardTitle>{t('didYouKnow')}</CardTitle>
                         <CardDescription>{t('didYouKnowSubtitle')}</CardDescription>
