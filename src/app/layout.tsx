@@ -11,6 +11,7 @@ import { PageSpinner } from '@/components/layout/page-spinner';
 import { NavigationEvents } from '@/components/layout/navigation-events';
 import { Suspense } from 'react';
 import { LanguageProvider } from '@/components/layout/language-provider';
+import { Footer } from '@/components/layout/footer';
 
 export const metadata: Metadata = {
   title: 'SafeHaven',
@@ -34,11 +35,12 @@ export default function RootLayout({
           <LoadingProvider>
             <SidebarProvider>
               <AppSidebar />
-              <SidebarInset>
+              <SidebarInset className="flex flex-col">
                 <Header />
-                <main className="p-4 sm:p-6 lg:p-8">
+                <main className="flex-1 p-4 sm:p-6 lg:p-8">
                   {children}
                 </main>
+                <Footer />
               </SidebarInset>
             </SidebarProvider>
             <Toaster />

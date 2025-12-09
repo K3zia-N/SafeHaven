@@ -45,6 +45,10 @@ export default {
           DEFAULT: 'hsl(var(--destructive))',
           foreground: 'hsl(var(--destructive-foreground))',
         },
+        indigo: {
+          DEFAULT: 'hsl(var(--indigo))',
+          foreground: 'hsl(var(--indigo-foreground))',
+        },
         border: 'hsl(var(--border))',
         input: 'hsl(var(--input))',
         ring: 'hsl(var(--ring))',
