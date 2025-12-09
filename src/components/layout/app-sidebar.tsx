@@ -89,7 +89,7 @@ export function AppSidebar() {
       <SidebarHeader className="group-data-[collapsible=icon]:justify-center">
         <LoadingLink href="/">
           <div className="flex items-center gap-2.5">
-              <div className="bg-primary p-2 rounded-lg flex-shrink-0">
+              <div className="bg-brand-purple p-2 rounded-lg flex-shrink-0">
                   <SafeHavenLogo />
               </div>
               <span className="text-xl font-semibold group-data-[collapsible=icon]:hidden">SafeHaven</span>
