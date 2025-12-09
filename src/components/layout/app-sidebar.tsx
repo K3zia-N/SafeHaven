@@ -22,6 +22,8 @@ import {
   SidebarFooter,
 } from '@/components/ui/sidebar';
 import { Separator } from '../ui/separator';
+import { useLoading } from './loading-provider';
+import { ReactNode } from 'react';
 
 const menuItems = [
   { href: '/', label: 'Dashboard', icon: LayoutDashboard },
@@ -46,6 +48,23 @@ const SafeHavenLogo = () => (
     </svg>
 )
 
+const LoadingLink = ({ href, children }: { href: string, children: ReactNode }) => {
+    const { setIsLoading } = useLoading();
+    const pathname = usePathname();
+
+    const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+        if (href !== pathname) {
+            setIsLoading(true);
+        }
+    };
+
+    return (
+        <Link href={href} onClick={handleClick}>
+            {children}
+        </Link>
+    );
+};
+
 export function AppSidebar() {
   const pathname = usePathname();
 
@@ -57,10 +76,10 @@ export function AppSidebar() {
         className="w-full"
         tooltip={{ children: item.label }}
       >
-        <Link href={item.href}>
+        <LoadingLink href={item.href}>
           <item.icon className="size-5" />
           <span>{item.label}</span>
-        </Link>
+        </LoadingLink>
       </SidebarMenuButton>
     </SidebarMenuItem>
   ));
@@ -68,12 +87,14 @@ export function AppSidebar() {
   return (
     <Sidebar collapsible="icon">
       <SidebarHeader className="group-data-[collapsible=icon]:justify-center">
-        <Link href="/" className="flex items-center gap-2.5">
-            <div className="bg-primary p-2 rounded-lg flex-shrink-0">
-                <SafeHavenLogo />
-            </div>
-            <span className="text-xl font-semibold group-data-[collapsible=icon]:hidden">SafeHaven</span>
-        </Link>
+        <LoadingLink href="/">
+          <div className="flex items-center gap-2.5">
+              <div className="bg-primary p-2 rounded-lg flex-shrink-0">
+                  <SafeHavenLogo />
+              </div>
+              <span className="text-xl font-semibold group-data-[collapsible=icon]:hidden">SafeHaven</span>
+          </div>
+        </LoadingLink>
       </SidebarHeader>
       <SidebarContent>
         <SidebarMenu>

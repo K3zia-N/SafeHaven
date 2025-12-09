@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/carousel"
 import { useState, useEffect, useRef } from 'react';
 import Autoplay from "embla-carousel-autoplay"
+import { useLoading } from '@/components/layout/loading-provider';
 
 
 const features = [
@@ -77,6 +78,14 @@ export default function Home() {
   const plugin = useRef(
     Autoplay({ delay: 5000, stopOnInteraction: true, stopOnMouseEnter: true })
   );
+  const { setIsLoading } = useLoading();
+
+  const handleLinkClick = (href: string) => {
+    if (href !== window.location.pathname) {
+      setIsLoading(true);
+    }
+  };
+
 
   useEffect(() => {
     setIsMounted(true);
@@ -125,7 +134,7 @@ export default function Home() {
               </CardContent>
               <CardFooter>
                 <Button asChild className="w-full" variant="secondary">
-                  <Link href={feature.href}>
+                  <Link href={feature.href} onClick={() => handleLinkClick(feature.href)}>
                     {feature.cta} <ArrowRight className="ml-2 size-4" />
                   </Link>
                 </Button>
