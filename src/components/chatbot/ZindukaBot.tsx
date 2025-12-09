@@ -48,7 +48,7 @@ export function ZindukaBot() {
     if (isOpen && messages.length === 0) {
         setIsLoading(true);
         setTimeout(() => {
-            setMessages([{ sender: 'bot', text: 'Hello! I am ZindukaBot. "Zinduka" means "Rise Up". I\'m here to offer a listening ear and help you find your way around the app. How are you feeling today?' }]);
+            setMessages([{ sender: 'bot', text: "Hello! I am ZindukaBot. I'm here to offer a listening ear and help you find your way around the app. How are you feeling today?" }]);
             setIsLoading(false);
         }, 500);
     }
