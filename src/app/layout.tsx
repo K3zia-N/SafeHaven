@@ -10,6 +10,7 @@ import { LoadingProvider } from '@/components/layout/loading-provider';
 import { PageSpinner } from '@/components/layout/page-spinner';
 import { NavigationEvents } from '@/components/layout/navigation-events';
 import { Suspense } from 'react';
+import { LanguageProvider } from '@/components/layout/language-provider';
 
 export const metadata: Metadata = {
   title: 'SafeHaven',
@@ -29,23 +30,25 @@ export default function RootLayout({
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
       </head>
       <body className={cn("font-body antialiased")}>
-        <LoadingProvider>
-          <SidebarProvider>
-            <AppSidebar />
-            <SidebarInset>
-              <Header />
-              <main className="p-4 sm:p-6 lg:p-8">
-                {children}
-              </main>
-            </SidebarInset>
-          </SidebarProvider>
-          <Toaster />
-          <ZindukaBot />
-          <PageSpinner />
-          <Suspense fallback={null}>
-            <NavigationEvents />
-          </Suspense>
-        </LoadingProvider>
+        <LanguageProvider>
+          <LoadingProvider>
+            <SidebarProvider>
+              <AppSidebar />
+              <SidebarInset>
+                <Header />
+                <main className="p-4 sm:p-6 lg:p-8">
+                  {children}
+                </main>
+              </SidebarInset>
+            </SidebarProvider>
+            <Toaster />
+            <ZindukaBot />
+            <PageSpinner />
+            <Suspense fallback={null}>
+              <NavigationEvents />
+            </Suspense>
+          </LoadingProvider>
+        </LanguageProvider>
       </body>
     </html>
   );

@@ -17,50 +17,51 @@ import {
 import { useState, useEffect, useRef } from 'react';
 import Autoplay from "embla-carousel-autoplay"
 import { useLoading } from '@/components/layout/loading-provider';
+import { useLanguage } from '@/components/layout/language-provider';
 
 
 const features = [
   {
-    title: 'Report an Incident',
-    description: 'Safely and anonymously document an incident. Your voice matters.',
+    titleKey: 'feature_report',
+    descriptionKey: 'feature_report_desc',
     href: '/report-incident',
     icon: FileText,
-    cta: 'Start Report',
+    ctaKey: 'feature_report_cta',
   },
   {
-    title: 'Emergency Guidance',
-    description: 'Immediate steps to take and emergency contacts for critical situations.',
+    titleKey: 'feature_emergency',
+    descriptionKey: 'feature_emergency_desc',
     href: '/emergency',
     icon: ShieldAlert,
-    cta: 'Get Help Now',
+    ctaKey: 'feature_emergency_cta',
   },
   {
-    title: 'Find Support',
-    description: 'Connect with local shelters, counseling, and support groups.',
+    titleKey: 'feature_support',
+    descriptionKey: 'feature_support_desc',
     href: '/find-support',
     icon: HeartHandshake,
-    cta: 'Find Resources',
+    ctaKey: 'feature_support_cta',
   },
   {
-    title: 'Know Your Rights',
-    description: 'Learn about your legal rights and the procedures for justice.',
+    titleKey: 'feature_rights',
+    descriptionKey: 'feature_rights_desc',
     href: '/legal-rights',
     icon: Gavel,
-    cta: 'Learn More',
+    ctaKey: 'feature_rights_cta',
   },
   {
-    title: 'Safe Locations',
-    description: 'Find nearby police stations, hospitals, and other safe places.',
+    titleKey: 'feature_locations',
+    descriptionKey: 'feature_locations_desc',
     href: '/safe-locations',
     icon: LocateFixed,
-    cta: 'Find Locations',
+    ctaKey: 'feature_locations_cta',
   },
    {
-    title: 'Community Board',
-    description: 'Share and connect with others in a safe, anonymous space.',
+    titleKey: 'feature_community',
+    descriptionKey: 'feature_community_desc',
     href: '/community',
     icon: Users,
-    cta: 'Visit Board',
+    ctaKey: 'feature_community_cta',
   },
 ];
 
@@ -79,6 +80,7 @@ export default function Home() {
     Autoplay({ delay: 5000, stopOnInteraction: true, stopOnMouseEnter: true })
   );
   const { setIsLoading } = useLoading();
+  const { t } = useLanguage();
 
   const handleLinkClick = (href: string) => {
     if (href !== window.location.pathname) {
@@ -110,9 +112,9 @@ export default function Home() {
         )}
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
         <div className="relative h-full flex flex-col justify-end p-6 md:p-8 text-white">
-          <h1 className="text-4xl md:text-5xl font-bold tracking-tight">You are not alone.</h1>
+          <h1 className="text-4xl md:text-5xl font-bold tracking-tight">{t('heroTitle')}</h1>
           <p className="mt-2 max-w-2xl text-lg text-primary-foreground/90">
-            SafeHaven is a secure and anonymous platform providing support, resources, and a voice for survivors of gender-based violence.
+            {t('heroSubtitle')}
           </p>
         </div>
       </section>
@@ -120,22 +122,22 @@ export default function Home() {
       <section>
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {features.map((feature) => (
-            <Card key={feature.title} className="flex flex-col transition-transform transform hover:-translate-y-1 hover:shadow-xl">
+            <Card key={feature.titleKey} className="flex flex-col transition-transform transform hover:-translate-y-1 hover:shadow-xl">
               <CardHeader>
                 <div className="flex items-center gap-4">
                     <div className="bg-accent/20 p-3 rounded-lg">
                         <feature.icon className="size-6 text-primary" />
                     </div>
-                    <CardTitle>{feature.title}</CardTitle>
+                    <CardTitle>{t(feature.titleKey as any)}</CardTitle>
                 </div>
               </CardHeader>
               <CardContent className="flex-grow">
-                <CardDescription>{feature.description}</CardDescription>
+                <CardDescription>{t(feature.descriptionKey as any)}</CardDescription>
               </CardContent>
               <CardFooter>
                 <Button asChild className="w-full" variant="secondary">
                   <Link href={feature.href} onClick={() => handleLinkClick(feature.href)}>
-                    {feature.cta} <ArrowRight className="ml-2 size-4" />
+                    {t(feature.ctaKey as any)} <ArrowRight className="ml-2 size-4" />
                   </Link>
                 </Button>
               </CardFooter>
@@ -158,8 +160,8 @@ export default function Home() {
               <CarouselItem key={index}>
                 <Card className="bg-accent/30 border-accent h-full">
                     <CardHeader>
-                        <CardTitle>Did You Know?</CardTitle>
-                        <CardDescription>Insights on GBV cases in Kenya.</CardDescription>
+                        <CardTitle>{t('didYouKnow')}</CardTitle>
+                        <CardDescription>{t('didYouKnowSubtitle')}</CardDescription>
                     </CardHeader>
                     <CardContent>
                         <p className="text-muted-foreground italic">"{fact}"</p>

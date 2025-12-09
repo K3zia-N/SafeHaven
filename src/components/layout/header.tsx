@@ -9,6 +9,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Globe } from "lucide-react";
+import { useLanguage } from "./language-provider";
+import type { Language } from "@/lib/translations";
 
 const pageTitles: { [key: string]: string } = {
     '/': 'Dashboard',
@@ -21,6 +23,12 @@ const pageTitles: { [key: string]: string } = {
 };
 
 function LanguageSelector() {
+    const { setLanguage } = useLanguage();
+
+    const handleLanguageChange = (lang: Language) => {
+        setLanguage(lang);
+    };
+
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -30,9 +38,9 @@ function LanguageSelector() {
                 </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-                <DropdownMenuItem>English</DropdownMenuItem>
-                <DropdownMenuItem>Swahili</DropdownMenuItem>
-                <DropdownMenuItem>Kikuyu</DropdownMenuItem>
+                <DropdownMenuItem onClick={() => handleLanguageChange('en')}>English</DropdownMenuItem>
+                <DropdownMenuItem onClick={() => handleLanguageChange('sw')}>Swahili</DropdownMenuItem>
+                <DropdownMenuItem onClick={() => handleLanguageChange('ki')}>Kikuyu</DropdownMenuItem>
             </DropdownMenuContent>
         </DropdownMenu>
     );
@@ -41,13 +49,15 @@ function LanguageSelector() {
 
 export function Header() {
     const pathname = usePathname();
-    const title = pageTitles[pathname] ?? 'SafeHaven';
+    const { t } = useLanguage();
+    const title = pageTitles[pathname] ? t(pageTitles[pathname].toLowerCase().replace(/ /g, '_') as any) : 'SafeHaven';
+
 
     return (
         <header className="sticky top-0 z-10 flex h-16 shrink-0 items-center gap-4 border-b bg-background/80 px-4 backdrop-blur-sm sm:px-6">
             <SidebarTrigger className="md:hidden" />
             <div className="flex-1">
-                <h1 className="text-lg font-semibold md:text-xl">{title}</h1>
+                 <h1 className="text-lg font-semibold md:text-xl">{pathname === '/' ? t('dashboardTitle') : title}</h1>
             </div>
             <LanguageSelector />
         </header>
