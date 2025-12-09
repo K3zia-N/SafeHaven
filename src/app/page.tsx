@@ -125,7 +125,7 @@ export default function Home() {
             <Card key={feature.titleKey} className="flex flex-col transition-transform transform hover:-translate-y-1 hover:shadow-xl">
               <CardHeader>
                 <div className="flex items-center gap-4">
-                    <div className="bg-accent/20 p-3 rounded-lg">
+                    <div className="bg-primary/20 p-3 rounded-lg">
                         <feature.icon className="size-6 text-primary" />
                     </div>
                     <CardTitle>{t(feature.titleKey as any)}</CardTitle>
