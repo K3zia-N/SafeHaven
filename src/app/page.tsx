@@ -1,12 +1,10 @@
 
 'use client';
 
-import Image from 'next/image';
 import Link from 'next/link';
-import { ArrowRight, HeartHandshake, ShieldAlert, Gavel, Users, FileText, LocateFixed, MessageSquareHeart } from 'lucide-react';
+import { ArrowRight, HeartHandshake, ShieldAlert, Gavel, Users, FileText, LocateFixed } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/card';
-import { PlaceHolderImages } from '@/lib/placeholder-images';
 import {
   Carousel,
   CarouselContent,
@@ -72,8 +70,6 @@ const didYouKnowFacts = [
     "Economic abuse, where a partner controls finances to limit independence, is a significant and often hidden form of GBV."
 ];
 
-const heroImage = PlaceHolderImages.find(img => img.id === "hero-1");
-
 export default function Home() {
   const [isMounted, setIsMounted] = useState(false);
   const plugin = useRef(
@@ -99,27 +95,12 @@ export default function Home() {
   
   return (
     <div className="flex flex-col gap-8 md:gap-12 animate-in fade-in-50">
-      {heroImage && (
-        <section
-          className="relative w-full h-[420px] overflow-hidden"
-        >
-          <Image
-            src={heroImage.imageUrl}
-            alt={heroImage.description}
-            fill
-            className="object-cover"
-            data-ai-hint={heroImage.imageHint}
-            priority
-          />
-          <div className="absolute inset-0 bg-black/50" />
-          <div className="relative h-full flex flex-col justify-center items-center p-6 md:p-8 text-white text-center">
+        <section className="text-center py-8">
             <h1 className="text-4xl md:text-5xl font-bold tracking-tight">{t('heroTitle')}</h1>
-            <p className="mt-4 max-w-2xl text-lg text-primary-foreground/90">
+            <p className="mt-4 max-w-2xl mx-auto text-lg text-muted-foreground">
               {t('heroSubtitle')}
             </p>
-          </div>
         </section>
-      )}
 
       <section>
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
