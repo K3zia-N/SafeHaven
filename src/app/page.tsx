@@ -99,25 +99,21 @@ export default function Home() {
   
   return (
     <div className="flex flex-col gap-8 md:gap-12 animate-in fade-in-50">
-      <section className="relative w-full h-96 rounded-lg overflow-hidden">
-        {heroImage && (
-            <Image
-                src={heroImage.imageUrl}
-                alt={heroImage.description}
-                fill
-                priority
-                className="object-cover"
-                data-ai-hint={heroImage.imageHint}
-            />
-        )}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-        <div className="relative h-full flex flex-col justify-end p-6 md:p-8 text-white container">
-          <h1 className="text-4xl md:text-5xl font-bold tracking-tight">{t('heroTitle')}</h1>
-          <p className="mt-2 max-w-2xl text-lg text-primary-foreground/90">
-            {t('heroSubtitle')}
-          </p>
-        </div>
-      </section>
+      {heroImage && (
+        <section
+          className="relative w-full h-96 rounded-lg overflow-hidden bg-cover bg-center"
+          style={{ backgroundImage: `url(${heroImage.imageUrl})` }}
+          data-ai-hint={heroImage.imageHint}
+        >
+          <div className="absolute inset-0 bg-black/50" />
+          <div className="relative h-full flex flex-col justify-center items-center p-6 md:p-8 text-white text-center">
+            <h1 className="text-4xl md:text-5xl font-bold tracking-tight">{t('heroTitle')}</h1>
+            <p className="mt-4 max-w-2xl text-lg text-primary-foreground/90">
+              {t('heroSubtitle')}
+            </p>
+          </div>
+        </section>
+      )}
 
       <section>
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
