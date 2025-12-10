@@ -36,6 +36,7 @@ import { CommunityPost } from '@/lib/types';
 import { initiateAnonymousSignIn } from '@/firebase/non-blocking-login';
 import { useState } from 'react';
 import { formatDistanceToNow } from 'date-fns';
+import Image from 'next/image';
 
 const newPostSchema = z.object({
   title: z.string().min(5, 'Title must be at least 5 characters long.'),
@@ -161,13 +162,22 @@ export default function CommunityPage() {
 
   return (
     <div className="space-y-6 animate-in fade-in-50">
-      <div className="flex flex-wrap gap-4 justify-between items-center">
-        <div>
-          <h1 className="text-2xl font-bold">Anonymous Community Board</h1>
-          <p className="text-muted-foreground">
-            A safe place to share and connect. All posts are anonymous.
-          </p>
-        </div>
+        <section className="relative w-full h-64 rounded-lg overflow-hidden">
+            <Image
+                src="https://raw.githubusercontent.com/K3zia-N/Zinduka/zinduka_final/ZINDUKA/images/de3ccf05-0e75-429b-b6c5-a4ea2b5577aa.jpg"
+                alt="Supportive community"
+                fill
+                className="object-cover"
+            />
+            <div className="absolute inset-0 bg-black/50 flex flex-col items-center justify-center text-center p-4">
+                <h1 className="text-3xl md:text-4xl font-bold tracking-tight text-white">Anonymous Community Board</h1>
+                <p className="mt-2 max-w-2xl text-lg text-primary-foreground/90">
+                    A safe place to share and connect. All posts are anonymous.
+                </p>
+            </div>
+        </section>
+
+      <div className="flex flex-wrap gap-4 justify-end items-center">
         <NewPostDialog />
       </div>
 
