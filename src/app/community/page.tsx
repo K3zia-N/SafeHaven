@@ -162,7 +162,7 @@ export default function CommunityPage() {
 
   return (
     <div className="space-y-6 animate-in fade-in-50">
-        <section className="relative w-full h-64 rounded-lg overflow-hidden">
+        <section className="relative w-full h-72 overflow-hidden">
             <Image
                 src="https://raw.githubusercontent.com/K3zia-N/Zinduka/zinduka_final/ZINDUKA/images/de3ccf05-0e75-429b-b6c5-a4ea2b5577aa.jpg"
                 alt="Supportive community"
