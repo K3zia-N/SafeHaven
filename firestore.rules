@@ -1,120 +1,112 @@
 /**
- * Core Philosophy: This ruleset enforces a strict, user-centric security model. Data is segregated into two main categories: 
- * 1. Private User Data: Information that belongs exclusively to a single user (e.g., their profile, their incident reports). Access is strictly limited to the authenticated owner.
- * 2. Public Data: Information that is readable by anyone but can only be created or modified by authenticated users under specific conditions (e.g., community posts).
+ * Core Philosophy: This ruleset enforces a "Public Read, Anonymous Create, No Modification" model.
+ * All data is intended for public consumption, and any authenticated user (including anonymous ones)
+ * can contribute new data. To prevent tampering and abuse, once data is created, it cannot be
+ * updated or deleted through the client SDKs.
  *
- * Data Structure:
- * - /users/{userId}/...: This path contains all data private to a specific user. The rules leverage the path itself to enforce ownership, which is highly performant and secure.
- * - /community_posts/{postId}: A top-level collection for public posts. Ownership is managed by a 'userId' field on each document.
- * - /resources/{resourceId}: A top-level collection for public-facing information, like help centers. This collection is treated as read-only for clients.
+ * Data Structure: The database uses a flat structure with four top-level collections:
+ * - /incident_reports: Stores anonymous reports of incidents.
+ * - /resources: A public directory of support resources.
+ * - /community_posts: An anonymous public message board.
+ * - /safe_locations: A public directory of safe locations.
+ * There are no user-specific collections or data nesting.
  *
  * Key Security Decisions:
- * - User Enumeration Disabled: Listing documents in the top-level `/users` collection is disallowed to protect user privacy.
- * - Strict Ownership: All documents within a user's data tree (`/users/{userId}/*`) are accessible only by that user.
- * - Public Read, Owner Write: The `/community_posts` collection is readable by everyone, but only the original author can modify or delete their own post.
- * - Read-Only Public Data: The `/resources` collection is publicly readable but cannot be modified by any client-side user. This is a secure default, assuming this data is managed by administrators via a trusted backend or the Firebase Console.
+ * - Public Read Access: All collections are publicly readable by anyone, including unauthenticated users.
+ *   This supports the app's goal of providing open access to information.
+ * - Anonymous Creation: Any signed-in user, including those authenticated anonymously, can create
+ *   documents in any collection.
+ * - Immutable Data: Updates and deletes are universally disallowed. This is a critical security
+ *   decision made because the data entities lack any concept of ownership (e.g., no 'ownerId' field).
+ *   Disallowing modifications is the only way to secure the data against unauthorized changes.
  *
- * Denormalization for Authorization:
- * This ruleset relies on denormalization to ensure fast and secure authorization checks.
- * - For `/community_posts`, a `userId` field is stored directly on each post document. This allows a simple check (`resource.data.userId == request.auth.uid`) without needing slow and costly `get()` calls to other documents.
- * - For `/users/{userId}/incident_reports`, the ownership is implicit in the document's path, which is the most efficient pattern for securing user-owned subcollections.
+ * Denormalization for Authorization: Not applicable. The security model is uniform across all
+ * documents and does not depend on user-specific roles or relationships, eliminating the need
+ * for denormalization.
  *
- * Structural Segregation:
- * Private data (Incident Reports) is stored in a user-specific subcollection (`/users/{userId}/incident_reports`) to prevent any possibility of it being listed or accessed publicly. Public data (`community_posts`, `resources`) is kept in separate top-level collections.
+ * Structural Segregation: The database is well-structured, with each distinct data type
+ * (incidents, resources, posts, locations) segregated into its own top-level collection. This
+ * simplifies rule logic, as all documents within a collection share the same access controls.
  */
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
-    // --------------------------------
     // Helper Functions
-    // --------------------------------
+    // =================================
 
     /**
-     * Checks if the user is authenticated.
+     * Checks if a user is authenticated, including anonymous users.
      */
     function isSignedIn() {
       return request.auth != null;
     }
 
-    /**
-     * Checks if the authenticated user's UID matches the provided userId.
-     * This is the primary function for verifying document ownership.
-     */
-    function isOwner(userId) {
-      return isSignedIn() && request.auth.uid == userId;
-    }
-
-    /**
-     * A robust check for update/delete operations, ensuring the user is the
-     * owner AND the document actually exists before the operation proceeds.
-     */
-    function isExistingOwner(userId) {
-      return isOwner(userId) && resource != null;
-    }
-
-    // --------------------------------
     // Collection Rules
-    // --------------------------------
+    // =================================
 
     /**
-     * @description Controls access to a user's own profile document.
-     * @path /users/{userId}
-     * @allow A user (uid: 'user123') can (create) their own profile at /users/user123.
-     * @deny A user (uid: 'user456') cannot (get) or (update) the profile at /users/user123.
-     * @principle Restricts access to a user's own data tree and prevents user enumeration.
+     * @description Controls access to anonymous incident reports.
+     * @path /incident_reports/{incidentReportId}
+     * @allow (get) Any user, signed-in or not, can read an individual incident report.
+     * @allow (create) An anonymously signed-in user can submit a new incident report.
+     * @deny (update) No user can update an existing incident report.
+     * @principle Public Read, Anonymous Create, No Modification: Ensures reports are immutable once submitted.
      */
-    match /users/{userId} {
-      allow get: if isOwner(userId);
-      allow list: if false;
-      allow create: if isOwner(userId) && request.resource.data.id == userId;
-      allow update: if isExistingOwner(userId) && request.resource.data.id == resource.data.id;
-      allow delete: if isExistingOwner(userId);
-
-      /**
-       * @description Controls access to incident reports, which are private to each user.
-       * @path /users/{userId}/incident_reports/{reportId}
-       * @allow A user (uid: 'user123') can (create) or (list) reports under /users/user123/incident_reports.
-       * @deny A user (uid: 'user456') cannot (get) any document under /users/user123/incident_reports.
-       * @principle Enforces strict ownership for sensitive, user-specific subcollections.
-       */
-      match /incident_reports/{reportId} {
-        allow get: if isOwner(userId);
-        allow list: if isOwner(userId);
-        allow create: if isOwner(userId) && request.resource.data.userId == userId;
-        allow update: if isExistingOwner(userId) && request.resource.data.userId == resource.data.userId;
-        allow delete: if isExistingOwner(userId);
-      }
+    match /incident_reports/{incidentReportId} {
+      allow get: if true;
+      allow list: if true;
+      allow create: if isSignedIn();
+      allow update: if false;
+      allow delete: if false;
     }
 
     /**
-     * @description Controls access to public support resources. This data is public to read but locked for writing.
+     * @description Controls access to the public directory of support resources.
      * @path /resources/{resourceId}
-     * @allow Any user, signed in or not, can (get) or (list) documents in this collection.
-     * @deny Any user, regardless of auth state, cannot (create), (update), or (delete) a resource.
-     * @principle Implements a secure "public read-only" pattern, assuming data is managed by a trusted backend.
+     * @allow (list) Any user, signed-in or not, can list all available resources.
+     * @allow (create) A signed-in user (e.g., an admin via a backend tool) can add a new resource.
+     * @deny (delete) No user can delete a resource via the client.
+     * @principle Public Read, Anonymous Create, No Modification: Allows public discovery of resources while protecting the data's integrity.
      */
     match /resources/{resourceId} {
       allow get: if true;
       allow list: if true;
-      allow create: if false; // Managed by backend/console
-      allow update: if false; // Managed by backend/console
-      allow delete: if false; // Managed by backend/console
+      allow create: if isSignedIn();
+      allow update: if false;
+      allow delete: if false;
     }
 
     /**
-     * @description Controls access to the public community board. Posts are public to read, but only the author can manage their own posts.
-     * @path /community_posts/{postId}
-     * @allow Any user can (list) all posts. A signed-in user (uid: 'user123') can (create) a post with `userId: 'user123'`.
-     * @deny A signed-in user (uid: 'user456') cannot (update) or (delete) a post created by 'user123'.
-     * @principle Enforces document ownership for writes in a publicly readable collection.
+     * @description Controls access to the anonymous community discussion board.
+     * @path /community_posts/{communityPostId}
+     * @allow (list) Any user, signed-in or not, can read all community posts.
+     * @allow (create) An anonymously signed-in user can create a new post.
+     * @deny (update) A user tries to update the content of an existing post.
+     * @principle Public Read, Anonymous Create, No Modification: Fosters open, anonymous discussion while preventing posts from being altered after creation.
      */
-    match /community_posts/{postId} {
+    match /community_posts/{communityPostId} {
       allow get: if true;
       allow list: if true;
-      allow create: if isSignedIn() && request.resource.data.userId == request.auth.uid;
-      allow update: if isExistingOwner(resource.data.userId) && request.resource.data.userId == resource.data.userId;
-      allow delete: if isExistingOwner(resource.data.userId);
+      allow create: if isSignedIn();
+      allow update: if false;
+      allow delete: if false;
+    }
+
+    /**
+     * @description Controls access to the public directory of safe locations.
+     * @path /safe_locations/{safeLocationId}
+     * @allow (get) Any user can look up a specific safe location.
+     * @allow (create) A signed-in user (e.g., an admin via a backend tool) can add a new safe location.
+     * @deny (delete) No user can delete a safe location via the client.
+     * @principle Public Read, Anonymous Create, No Modification: Ensures the list of safe locations is reliable and cannot be tampered with.
+     */
+    match /safe_locations/{safeLocationId} {
+      allow get: if true;
+      allow list: if true;
+      allow create: if isSignedIn();
+      allow update: if false;
+      allow delete: if false;
     }
   }
 }

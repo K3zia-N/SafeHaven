@@ -4,57 +4,48 @@
       "$schema": "http://json-schema.org/draft-07/schema#",
       "title": "IncidentReport",
       "type": "object",
-      "description": "Represents a report of a GBV incident submitted by a user.",
+      "description": "Represents a report of a Gender-Based Violence (GBV) incident.",
       "properties": {
         "id": {
           "type": "string",
           "description": "Unique identifier for the incident report."
         },
-        "userId": {
+        "reportDetails": {
           "type": "string",
-          "description": "Reference to the User who submitted the report. (Relationship: User 1:N IncidentReport)"
+          "description": "Detailed description of the incident."
         },
         "incidentType": {
           "type": "string",
           "description": "Type of incident reported (e.g., physical assault, harassment)."
         },
-        "incidentDate": {
+        "location": {
+          "type": "string",
+          "description": "Location where the incident occurred."
+        },
+        "dateOfIncident": {
           "type": "string",
           "description": "Date and time when the incident occurred.",
           "format": "date-time"
         },
-        "location": {
-          "type": "string",
-          "description": "Location where the incident occurred (e.g., address, city)."
+        "reporterAge": {
+          "type": "number",
+          "description": "Age of the person reporting the incident."
         },
-        "description": {
+        "reporterGender": {
           "type": "string",
-          "description": "Detailed description of the incident."
+          "description": "Gender of the person reporting the incident."
         },
-        "anonymous": {
-          "type": "boolean",
-          "description": "Indicates whether the report was submitted anonymously."
-        },
-        "createdAt": {
+        "additionalNotes": {
           "type": "string",
-          "description": "Timestamp when the report was created.",
-          "format": "date-time"
-        },
-        "updatedAt": {
-          "type": "string",
-          "description": "Timestamp when the report was last updated.",
-          "format": "date-time"
+          "description": "Any additional notes or information related to the incident."
         }
       },
       "required": [
         "id",
-        "userId",
+        "reportDetails",
         "incidentType",
-        "incidentDate",
-        "description",
-        "anonymous",
-        "createdAt",
-        "updatedAt"
+        "location",
+        "dateOfIncident"
       ]
     },
     "Resource": {
@@ -73,13 +64,13 @@
         },
         "description": {
           "type": "string",
-          "description": "Detailed description of the services offered by the resource."
+          "description": "Description of the services offered by the resource."
         },
         "address": {
           "type": "string",
-          "description": "Physical address of the resource."
+          "description": "Address of the resource."
         },
-        "phone": {
+        "phoneNumber": {
           "type": "string",
           "description": "Phone number of the resource."
         },
@@ -93,6 +84,10 @@
           "description": "Website URL of the resource.",
           "format": "uri"
         },
+        "category": {
+          "type": "string",
+          "description": "Category of the resource (e.g., legal, medical, shelter)."
+        },
         "latitude": {
           "type": "number",
           "description": "Latitude coordinate of the resource location."
@@ -100,10 +95,6 @@
         "longitude": {
           "type": "number",
           "description": "Longitude coordinate of the resource location."
-        },
-        "category": {
-          "type": "string",
-          "description": "Category of the resource (e.g., legal, medical, shelter)."
         }
       },
       "required": [
@@ -111,10 +102,10 @@
         "name",
         "description",
         "address",
-        "phone",
+        "phoneNumber",
+        "category",
         "latitude",
-        "longitude",
-        "category"
+        "longitude"
       ]
     },
     "CommunityPost": {
@@ -127,78 +118,72 @@
           "type": "string",
           "description": "Unique identifier for the community post."
         },
-        "userId": {
-          "type": "string",
-          "description": "Reference to the User who created the post. (Relationship: User 1:N CommunityPost)"
-        },
-        "title": {
-          "type": "string",
-          "description": "Title of the community post."
-        },
         "content": {
           "type": "string",
-          "description": "Content of the community post."
+          "description": "Content of the post."
         },
-        "createdAt": {
+        "timestamp": {
           "type": "string",
-          "description": "Timestamp when the post was created.",
+          "description": "Date and time when the post was created.",
           "format": "date-time"
         },
-        "updatedAt": {
-          "type": "string",
-          "description": "Timestamp when the post was last updated.",
-          "format": "date-time"
+        "likes": {
+          "type": "number",
+          "description": "Number of likes the post has received."
+        },
+        "dislikes": {
+          "type": "number",
+          "description": "Number of dislikes the post has received."
         }
       },
       "required": [
         "id",
-        "userId",
-        "title",
         "content",
-        "createdAt",
-        "updatedAt"
+        "timestamp"
       ]
     },
-    "User": {
+    "SafeLocation": {
       "$schema": "http://json-schema.org/draft-07/schema#",
-      "title": "User",
+      "title": "SafeLocation",
       "type": "object",
-      "description": "Represents a user of the SafeHaven application.",
+      "description": "Represents a safe location identified by the Safe Location Finder.",
       "properties": {
         "id": {
           "type": "string",
-          "description": "Unique identifier for the user."
+          "description": "Unique identifier for the safe location."
         },
-        "username": {
+        "name": {
           "type": "string",
-          "description": "Username of the user."
+          "description": "Name of the safe location."
         },
-        "email": {
+        "address": {
           "type": "string",
-          "description": "Email address of the user.",
-          "format": "email"
+          "description": "Address of the safe location."
         },
-        "location": {
-          "type": "string",
-          "description": "The last known location of the user. This should be generalized."
+        "latitude": {
+          "type": "number",
+          "description": "Latitude coordinate of the safe location."
         },
-        "createdAt": {
-          "type": "string",
-          "description": "Timestamp when the user account was created.",
-          "format": "date-time"
+        "longitude": {
+          "type": "number",
+          "description": "Longitude coordinate of the safe location."
         },
-        "updatedAt": {
+        "type": {
           "type": "string",
-          "description": "Timestamp when the user account was last updated.",
-          "format": "date-time"
+          "description": "Type of safe location (e.g., police station, hospital)."
+        },
+        "phoneNumber": {
+          "type": "string",
+          "description": "Phone number of the safe location."
         }
       },
       "required": [
         "id",
-        "username",
-        "email",
-        "createdAt",
-        "updatedAt"
+        "name",
+        "address",
+        "latitude",
+        "longitude",
+        "type"
       ]
     }
   },
@@ -211,37 +196,17 @@
   "firestore": {
     "structure": [
       {
-        "path": "/users/{userId}",
-        "definition": {
-          "entityName": "User",
-          "schema": {
-            "$ref": "#/backend/entities/User"
-          },
-          "description": "Stores user profile data.  Path-based ownership enforced.",
-          "params": [
-            {
-              "name": "userId",
-              "description": "The unique identifier for the user."
-            }
-          ]
-        }
-      },
-      {
-        "path": "/users/{userId}/incident_reports/{reportId}",
+        "path": "/incident_reports/{incidentReportId}",
         "definition": {
           "entityName": "IncidentReport",
           "schema": {
             "$ref": "#/backend/entities/IncidentReport"
           },
-          "description": "Stores incident reports submitted by users. Path-based ownership for simplified security rules. The path `/users/{userId}` enforces that each user can only access their own incident reports.",
+          "description": "Stores anonymous incident reports. No authorization beyond validation is required.",
           "params": [
             {
-              "name": "userId",
-              "description": "The unique identifier for the user."
-            },
-            {
-              "name": "reportId",
-              "description": "The unique identifier for the incident report."
+              "name": "incidentReportId",
+              "description": "Unique identifier for the incident report."
             }
           ]
         }
@@ -253,32 +218,48 @@
           "schema": {
             "$ref": "#/backend/entities/Resource"
           },
-          "description": "Stores information about available support resources.",
+          "description": "Stores publicly accessible resource information.",
           "params": [
             {
               "name": "resourceId",
-              "description": "The unique identifier for the resource."
+              "description": "Unique identifier for the resource."
             }
           ]
         }
       },
       {
-        "path": "/community_posts/{postId}",
+        "path": "/community_posts/{communityPostId}",
         "definition": {
           "entityName": "CommunityPost",
           "schema": {
             "$ref": "#/backend/entities/CommunityPost"
           },
-          "description": "Stores posts on the anonymous community board. Each post includes the userId of the creator.  Rules enforce that only the creating user or an admin can update/delete.",
+          "description": "Stores community posts for the anonymous discussion board.",
           "params": [
             {
-              "name": "postId",
-              "description": "The unique identifier for the community post."
+              "name": "communityPostId",
+              "description": "Unique identifier for the community post."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/safe_locations/{safeLocationId}",
+        "definition": {
+          "entityName": "SafeLocation",
+          "schema": {
+            "$ref": "#/backend/entities/SafeLocation"
+          },
+          "description": "Stores information about safe locations identified by the Safe Location Finder.",
+          "params": [
+            {
+              "name": "safeLocationId",
+              "description": "Unique identifier for the safe location."
             }
           ]
         }
       }
     ],
-    "reasoning": "The Firestore structure is designed to ensure Authorization Independence, DBAC, and QAPs. It leverages path-based ownership for user-specific data and denormalization to avoid `get()` calls in security rules.  Specifically, IncidentReports are stored under `/users/{userId}/incident_reports/{reportId}`, enforcing ownership and enabling secure list operations (QAPs) as rules can easily filter based on `request.auth.uid == userId`. Resources are stored in the `/resources/{resourceId}` collection, enabling global access. Community Posts are stored in the `/community_posts/{postId}` collection, and access is controlled by `request.auth.uid == resource.data.userId`. No `get()` calls are required in the security rules due to this structure, and list operations are secured."
+    "reasoning": "The Firestore data structure is designed to support SafeHaven's core features while adhering to the principles of Authorization Independence, Structural Segregation, and Access Modeling.  \n\n1.  **Incident Reports:** Incident reports are stored anonymously and globally accessible for analysis but not individually identifiable.  No specific authorization is required beyond basic validation.\n2.  **Resources:** Resources are stored globally and are publicly accessible. No specific authorization beyond validation is required.\n3.  **Community Posts:** Community posts are stored globally and are publicly accessible. No specific authorization beyond validation is required.\n4.  **Safe Locations:** Safe locations are stored globally and are publicly accessible. No specific authorization beyond validation is required.\n\nThis structure ensures that security rules are simple and maintainable, focusing on data validation rather than complex access control logic. Because all data is globally accessible, authorization independence is implicitly achieved; there is no need for denormalization.\n\nThe QAPs are addressed via Structural Segregation: each type of data (incident reports, resources, community posts, safe locations) is stored in its own collection, and all documents within a collection share the same security requirements (public read access, restricted write access).\n"
   }
 }
