@@ -6,14 +6,13 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { getResourceReferral, ResourceReferralOutput } from '@/ai/flows/resource-referral';
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
-import { Loader2, Sparkles, MapPin, Search, Bookmark } from 'lucide-react';
+import { Loader2, Sparkles, MapPin, Search, Navigation } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { useToast } from '@/hooks/use-toast';
 
 const formSchema = z.object({
   location: z.string().min(3, 'Please enter a valid location (e.g., city, zip code).'),
@@ -24,7 +23,6 @@ export function FindSupportTool() {
   const [result, setResult] = useState<ResourceReferralOutput | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const { toast } = useToast();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -45,14 +43,10 @@ export function FindSupportTool() {
     setIsLoading(false);
   }
 
-  const handleSaveResource = (resource: string) => {
-    // This is a placeholder for the actual save functionality
-    toast({
-        title: "Feature Coming Soon!",
-        description: "You will soon be able to save resources to your dashboard.",
-    });
-    console.log("Saving resource:", resource);
-  }
+  const handleNavigate = (address: string) => {
+    const googleMapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}`;
+    window.open(googleMapsUrl, '_blank');
+  };
 
   return (
     <div className="space-y-6">
@@ -119,26 +113,39 @@ export function FindSupportTool() {
         </div>
       )}
 
-      {result && (
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2"><Sparkles className="text-primary" /> AI-Powered Recommendations</CardTitle>
-            <CardDescription>Here are some resources we found based on your request. You can save them for later.</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <ul className="space-y-2">
-              {result.resourceRecommendations.map((rec, index) => (
-                <li key={index} className="flex justify-between items-center p-2 rounded-md hover:bg-muted">
-                  <span className="text-foreground flex-1">{rec}</span>
-                  <Button variant="ghost" size="icon" onClick={() => handleSaveResource(rec)}>
-                    <Bookmark className="size-4" />
-                  </Button>
-                </li>
-              ))}
-            </ul>
-          </CardContent>
-        </Card>
+      {result && result.resourceRecommendations && result.resourceRecommendations.length > 0 && (
+        <div className='space-y-4'>
+            <div className='flex items-center gap-2'>
+                <Sparkles className="text-primary" />
+                <h2 className='text-xl font-semibold'>AI-Powered Recommendations</h2>
+            </div>
+            <p className="text-muted-foreground">Here are some resources we found based on your request. Click navigate to get directions.</p>
+            <div className="grid gap-4 md:grid-cols-2">
+                {result.resourceRecommendations.map((rec, index) => (
+                <Card key={index}>
+                    <CardHeader>
+                        <CardTitle>{rec.name}</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                        <p className="text-sm text-muted-foreground">{rec.address}</p>
+                    </CardContent>
+                    <CardFooter>
+                        <Button onClick={() => handleNavigate(rec.address)} className='w-full'>
+                            <Navigation className="mr-2 h-4 w-4" />
+                            Navigate on Google Maps
+                        </Button>
+                    </CardFooter>
+                </Card>
+                ))}
+            </div>
+        </div>
       )}
+       {result && (!result.resourceRecommendations || result.resourceRecommendations.length === 0) && (
+        <Alert>
+            <AlertTitle>No Resources Found</AlertTitle>
+            <AlertDescription>We couldn't find any resources based on your search. Please try a different location or check your spelling.</AlertDescription>
+        </Alert>
+       )}
     </div>
   );
 }

@@ -17,10 +17,15 @@ const ResourceReferralInputSchema = z.object({
 });
 export type ResourceReferralInput = z.infer<typeof ResourceReferralInputSchema>;
 
+const RecommendationSchema = z.object({
+  name: z.string().describe("The name of the resource or organization."),
+  address: z.string().describe("The full physical address of the resource.")
+});
+
 const ResourceReferralOutputSchema = z.object({
   resourceRecommendations: z
-    .array(z.string())
-    .describe('A list of recommended resources for the user.'),
+    .array(RecommendationSchema)
+    .describe('A list of recommended resources for the user, including their name and address.'),
 });
 export type ResourceReferralOutput = z.infer<typeof ResourceReferralOutputSchema>;
 
@@ -34,18 +39,16 @@ const prompt = ai.definePrompt({
   name: 'resourceReferralPrompt',
   input: {schema: ResourceReferralInputSchema},
   output: {schema: ResourceReferralOutputSchema},
-  prompt: `You are an expert at recommending resources to people in need.
+  prompt: `You are an expert at recommending resources to people in need based on their location.
 
-You will use the location and needs of the user to recommend resources that can help them.
+You will use the location and needs of the user to find and recommend resources that can help them.
 
 Location: {{{location}}}
 Needs: {{{needs}}}
 
-Recommend resources that are relevant to the user's needs and are located near the user.
+For each recommendation, provide the name of the resource and its full, physical address. Recommend resources that are relevant to the user's needs and are located near the user.
 
-Ensure that the resource recommendations are in a list format.
-
-Resource Recommendations:
+Ensure that the resource recommendations are in a structured array format.
 `,
 });
 
