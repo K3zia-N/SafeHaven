@@ -99,7 +99,7 @@ export default function Home() {
   return (
     <div className="flex flex-col gap-8 md:gap-12 animate-in fade-in-50">
         
-      <section className="relative w-full h-[80vh]">
+      <section className="relative w-full h-[90vh] mt-4">
         {heroImage && (
             <Image
                 src={heroImage.imageUrl}
