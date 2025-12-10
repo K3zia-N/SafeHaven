@@ -92,7 +92,7 @@ function NewPostDialog() {
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        <Button>
+        <Button size="lg">
           <PlusCircle className="mr-2" />
           Create New Post
         </Button>
@@ -162,7 +162,7 @@ export default function CommunityPage() {
 
   return (
     <div className="space-y-6 animate-in fade-in-50">
-        <section className="relative w-full h-72 overflow-hidden">
+        <section className="relative w-full h-80 overflow-hidden">
             <Image
                 src="https://raw.githubusercontent.com/K3zia-N/Zinduka/zinduka_final/ZINDUKA/images/de3ccf05-0e75-429b-b6c5-a4ea2b5577aa.jpg"
                 alt="Supportive community"
@@ -177,7 +177,7 @@ export default function CommunityPage() {
             </div>
         </section>
 
-      <div className="flex flex-wrap gap-4 justify-end items-center">
+      <div className="flex justify-center my-8">
         <NewPostDialog />
       </div>
 
@@ -187,9 +187,9 @@ export default function CommunityPage() {
             </div>
         )}
 
-      <div className="space-y-4">
+      <div className="space-y-4 mx-auto max-w-4xl px-[30px]">
         {!isLoading && posts && posts.map(post => (
-          <Card key={post.id} className="transition-shadow hover:shadow-md">
+          <Card key={post.id} className="transition-shadow hover:shadow-lg bg-gradient-to-br from-card to-accent/10">
             <CardHeader>
               <CardTitle>{post.title}</CardTitle>
               <div className="flex items-center gap-2 text-sm text-muted-foreground">
@@ -214,7 +214,7 @@ export default function CommunityPage() {
           </Card>
         ))}
         {!isLoading && posts?.length === 0 && (
-            <Card className="text-center p-8">
+            <Card className="text-center p-8 bg-gradient-to-br from-card to-accent/10">
                 <CardContent>
                     <p className="text-muted-foreground">No posts yet. Be the first to share your story.</p>
                 </CardContent>
