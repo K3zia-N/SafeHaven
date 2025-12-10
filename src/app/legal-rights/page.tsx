@@ -1,3 +1,4 @@
+
 'use client'
 
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
@@ -59,19 +60,21 @@ export default function LegalRightsPage() {
                     <Accordion type="single" collapsible className="w-full">
                         {legalInfo.map((item, index) => (
                             <AccordionItem value={`item-${index}`} key={index}>
-                                <AccordionTrigger className="text-lg text-left hover:no-underline relative group pr-10">
-                                    {item.question}
-                                    <Button 
-                                        variant="ghost" 
-                                        size="icon" 
-                                        className="absolute right-0 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity"
-                                        onClick={(e) => {
-                                            e.stopPropagation(); // prevent accordion from toggling
-                                            handleSaveInfo(item);
-                                        }}
-                                    >
-                                        <Bookmark className="size-4" />
-                                    </Button>
+                                <AccordionTrigger className="text-lg text-left hover:no-underline group">
+                                    <div className="flex justify-between items-center w-full pr-2">
+                                        <span>{item.question}</span>
+                                        <Button 
+                                            variant="ghost" 
+                                            size="icon" 
+                                            className="opacity-0 group-hover:opacity-100 transition-opacity rounded-full"
+                                            onClick={(e) => {
+                                                e.stopPropagation(); // prevent accordion from toggling
+                                                handleSaveInfo(item);
+                                            }}
+                                        >
+                                            <Bookmark className="size-4" />
+                                        </Button>
+                                    </div>
                                 </AccordionTrigger>
                                 <AccordionContent className="text-base text-muted-foreground prose">
                                     {item.answer}
