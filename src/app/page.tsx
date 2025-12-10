@@ -99,13 +99,13 @@ export default function Home() {
   return (
     <div className="flex flex-col gap-8 md:gap-12 animate-in fade-in-50">
         
-      <section className="relative w-full h-80 rounded-lg overflow-hidden">
+      <section className="relative w-full h-[80vh]">
         {heroImage && (
             <Image
                 src={heroImage.imageUrl}
                 alt={heroImage.description}
                 fill
-                className="object-cover"
+                className="object-cover bg-center"
                 priority
                 data-ai-hint={heroImage.imageHint}
             />
