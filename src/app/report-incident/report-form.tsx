@@ -4,7 +4,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
 import { CalendarIcon, Check, Loader2 } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -32,8 +32,10 @@ import { format } from 'date-fns';
 import { Calendar } from '@/components/ui/calendar';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { useFirebase } from '@/firebase';
-import { addDocumentNonBlocking, initiateAnonymousSignIn } from '@/firebase';
+import { addDoc } from 'firebase/firestore';
 import { collection, serverTimestamp } from 'firebase/firestore';
+import { initiateAnonymousSignIn } from '@/firebase/non-blocking-login';
+import { useToast } from '@/hooks/use-toast';
 
 const formSchema = z.object({
   incidentDate: z.date({
@@ -50,46 +52,66 @@ const formSchema = z.object({
 export function ReportIncidentForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
-  const { firestore, auth, user } = useFirebase();
+  const { firestore, auth, user, isUserLoading } = useFirebase();
+  const { toast } = useToast();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
+    defaultValues: {
+      incidentType: '',
+      description: '',
+      location: '',
+    },
   });
+
+  // Effect to handle anonymous user sign-in and resubmission
+  useEffect(() => {
+    // If we have a user now, and we were trying to submit, try submitting again.
+    if (user && isSubmitting && form.formState.isSubmitting) {
+      form.handleSubmit(onSubmit)();
+    }
+  }, [user, isSubmitting]);
+
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     if (!firestore || !auth) {
-      console.error("Firebase not initialized");
-      alert("There was a problem submitting your report. Please try again later.");
-      return;
-    }
-
-    if (!user) {
-      initiateAnonymousSignIn(auth);
-      alert("You're being signed in anonymously. Please click submit again to post your report.");
+      toast({ variant: 'destructive', title: 'Error', description: 'Could not connect to services. Please try again.' });
       return;
     }
 
     setIsSubmitting(true);
-    
-    const reportData = {
-      ...values,
-      userId: user.uid,
-      anonymous: user.isAnonymous,
-      createdAt: serverTimestamp(),
-      updatedAt: serverTimestamp(),
-    };
 
-    const reportsCollectionRef = collection(firestore, 'users', user.uid, 'incident_reports');
+    // If there's no user and auth is not loading, initiate sign-in
+    if (!user && !isUserLoading) {
+      initiateAnonymousSignIn(auth);
+      // Let the useEffect handle the resubmission once the user is available.
+      toast({ title: "First-time Report", description: "Creating a secure anonymous session for you. Please wait..."});
+      // We keep isSubmitting true, so the useEffect knows to re-trigger.
+      return;
+    }
     
-    // Using non-blocking add with error handling via the global emitter
-    addDocumentNonBlocking(reportsCollectionRef, reportData);
-
-    // Simulate a short delay for user feedback, as the write is async
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    setIsSubmitting(false);
-    setIsSubmitted(true);
-    form.reset();
+    // If there is a user, proceed to submit the document
+    if (user) {
+        try {
+            const reportData = {
+                ...values,
+                userId: user.uid,
+                anonymous: user.isAnonymous,
+                createdAt: serverTimestamp(),
+                updatedAt: serverTimestamp(),
+            };
+            const reportsCollectionRef = collection(firestore, 'users', user.uid, 'incident_reports');
+            await addDoc(reportsCollectionRef, reportData);
+            
+            setIsSubmitted(true);
+            form.reset();
+        } catch (error) {
+            console.error("Error submitting report:", error);
+            toast({ variant: 'destructive', title: 'Submission Failed', description: 'There was an error submitting your report. Please try again.' });
+        } finally {
+            setIsSubmitting(false);
+        }
+    }
   }
   
   if (isSubmitted) {
@@ -102,7 +124,8 @@ export function ReportIncidentForm() {
           <div className="mt-4">
             <Button onClick={() => setIsSubmitted(false)} variant="outline">Submit another report</Button>
           </div>
-        </AlertDescription>
+        </Aler
+tDescription>
       </Alert>
     );
   }
@@ -222,8 +245,8 @@ export function ReportIncidentForm() {
                 </FormItem>
               )}
             />
-            <Button type="submit" disabled={isSubmitting}>
-              {isSubmitting ? (
+            <Button type="submit" disabled={isSubmitting || isUserLoading}>
+              {isSubmitting || isUserLoading ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                   Submitting...
