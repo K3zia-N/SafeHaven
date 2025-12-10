@@ -11,6 +11,7 @@ import { Suspense } from 'react';
 import { LanguageProvider } from '@/components/layout/language-provider';
 import { Footer } from '@/components/layout/footer';
 import { TooltipProvider } from '@/components/ui/tooltip';
+import { FirebaseClientProvider } from '@/firebase/client-provider';
 
 export const metadata: Metadata = {
   title: 'SafeHaven',
@@ -30,27 +31,29 @@ export default function RootLayout({
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
       </head>
       <body className={cn("font-body antialiased")}>
-        <LanguageProvider>
-          <LoadingProvider>
-            <TooltipProvider>
-              <div className="flex flex-col min-h-screen">
-                <Header />
-                <main className="flex-1">
-                  <div className="container py-4 sm:py-6 lg:py-8">
-                    {children}
-                  </div>
-                </main>
-                <Footer />
-              </div>
-            </TooltipProvider>
-            <Toaster />
-            <ZindukaBot />
-            <PageSpinner />
-            <Suspense fallback={null}>
-              <NavigationEvents />
-            </Suspense>
-          </LoadingProvider>
-        </LanguageProvider>
+        <FirebaseClientProvider>
+          <LanguageProvider>
+            <LoadingProvider>
+              <TooltipProvider>
+                <div className="flex flex-col min-h-screen">
+                  <Header />
+                  <main className="flex-1">
+                    <div className="container py-4 sm:py-6 lg:py-8">
+                      {children}
+                    </div>
+                  </main>
+                  <Footer />
+                </div>
+              </TooltipProvider>
+              <Toaster />
+              <ZindukaBot />
+              <PageSpinner />
+              <Suspense fallback={null}>
+                <NavigationEvents />
+              </Suspense>
+            </LoadingProvider>
+          </LanguageProvider>
+        </FirebaseClientProvider>
       </body>
     </html>
   );

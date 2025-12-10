@@ -1,8 +1,8 @@
 export const firebaseConfig = {
-  "projectId": "studio-7318090930-b34bf",
-  "appId": "1:860901327706:web:bf8f4ee5a93df79d4ca963",
-  "apiKey": "AIzaSyDCn5P6kBO14SB6VaSK_dETcKIlnof09iI",
-  "authDomain": "studio-7318090930-b34bf.firebaseapp.com",
-  "measurementId": "",
-  "messagingSenderId": "860901327706"
+  "projectId": "zinduka2-chatbot",
+  "appId": "1:473529932462:web:758cf2359e833f2f11a469",
+  "apiKey": "AIzaSyC05j5u-LVYj_C_2m1g-f_v4a7o4M6i_t4",
+  "authDomain": "zinduka2-chatbot.firebaseapp.com",
+  "storageBucket": "zinduka2-chatbot.appspot.com",
+  "messagingSenderId": "473529932462"
 };
