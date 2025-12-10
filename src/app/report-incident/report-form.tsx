@@ -124,8 +124,7 @@ export function ReportIncidentForm() {
           <div className="mt-4">
             <Button onClick={() => setIsSubmitted(false)} variant="outline">Submit another report</Button>
           </div>
-        </Aler
-tDescription>
+        </AlertDescription>
       </Alert>
     );
   }
