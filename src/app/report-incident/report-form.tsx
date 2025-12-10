@@ -112,9 +112,9 @@ export function ReportIncidentForm() {
       setIsSubmitted(true);
       form.reset();
 
-    } catch (error) {
+    } catch (error: any) {
         console.error("Error submitting report:", error);
-        toast({ variant: 'destructive', title: 'Submission Failed', description: 'There was an error submitting your report. Please try again.' });
+        toast({ variant: 'destructive', title: 'Submission Failed', description: error.message || 'There was an error submitting your report. Please try again.' });
     } finally {
         setIsSubmitting(false);
     }
