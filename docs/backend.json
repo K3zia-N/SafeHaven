@@ -1,0 +1,284 @@
+{
+  "entities": {
+    "IncidentReport": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "IncidentReport",
+      "type": "object",
+      "description": "Represents a report of a GBV incident submitted by a user.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the incident report."
+        },
+        "userId": {
+          "type": "string",
+          "description": "Reference to the User who submitted the report. (Relationship: User 1:N IncidentReport)"
+        },
+        "incidentType": {
+          "type": "string",
+          "description": "Type of incident reported (e.g., physical assault, harassment)."
+        },
+        "incidentDate": {
+          "type": "string",
+          "description": "Date and time when the incident occurred.",
+          "format": "date-time"
+        },
+        "location": {
+          "type": "string",
+          "description": "Location where the incident occurred (e.g., address, city)."
+        },
+        "description": {
+          "type": "string",
+          "description": "Detailed description of the incident."
+        },
+        "anonymous": {
+          "type": "boolean",
+          "description": "Indicates whether the report was submitted anonymously."
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Timestamp when the report was created.",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "description": "Timestamp when the report was last updated.",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "userId",
+        "incidentType",
+        "incidentDate",
+        "description",
+        "anonymous",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "Resource": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Resource",
+      "type": "object",
+      "description": "Represents a support resource or help center.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the resource."
+        },
+        "name": {
+          "type": "string",
+          "description": "Name of the resource."
+        },
+        "description": {
+          "type": "string",
+          "description": "Detailed description of the services offered by the resource."
+        },
+        "address": {
+          "type": "string",
+          "description": "Physical address of the resource."
+        },
+        "phone": {
+          "type": "string",
+          "description": "Phone number of the resource."
+        },
+        "email": {
+          "type": "string",
+          "description": "Email address of the resource.",
+          "format": "email"
+        },
+        "website": {
+          "type": "string",
+          "description": "Website URL of the resource.",
+          "format": "uri"
+        },
+        "latitude": {
+          "type": "number",
+          "description": "Latitude coordinate of the resource location."
+        },
+        "longitude": {
+          "type": "number",
+          "description": "Longitude coordinate of the resource location."
+        },
+        "category": {
+          "type": "string",
+          "description": "Category of the resource (e.g., legal, medical, shelter)."
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "description",
+        "address",
+        "phone",
+        "latitude",
+        "longitude",
+        "category"
+      ]
+    },
+    "CommunityPost": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "CommunityPost",
+      "type": "object",
+      "description": "Represents a post on the anonymous community board.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the community post."
+        },
+        "userId": {
+          "type": "string",
+          "description": "Reference to the User who created the post. (Relationship: User 1:N CommunityPost)"
+        },
+        "title": {
+          "type": "string",
+          "description": "Title of the community post."
+        },
+        "content": {
+          "type": "string",
+          "description": "Content of the community post."
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Timestamp when the post was created.",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "description": "Timestamp when the post was last updated.",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "userId",
+        "title",
+        "content",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "User": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "User",
+      "type": "object",
+      "description": "Represents a user of the SafeHaven application.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the user."
+        },
+        "username": {
+          "type": "string",
+          "description": "Username of the user."
+        },
+        "email": {
+          "type": "string",
+          "description": "Email address of the user.",
+          "format": "email"
+        },
+        "location": {
+          "type": "string",
+          "description": "The last known location of the user. This should be generalized."
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Timestamp when the user account was created.",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "description": "Timestamp when the user account was last updated.",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "username",
+        "email",
+        "createdAt",
+        "updatedAt"
+      ]
+    }
+  },
+  "auth": {
+    "providers": [
+      "password",
+      "anonymous"
+    ]
+  },
+  "firestore": {
+    "structure": [
+      {
+        "path": "/users/{userId}",
+        "definition": {
+          "entityName": "User",
+          "schema": {
+            "$ref": "#/backend/entities/User"
+          },
+          "description": "Stores user profile data.  Path-based ownership enforced.",
+          "params": [
+            {
+              "name": "userId",
+              "description": "The unique identifier for the user."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/users/{userId}/incident_reports/{reportId}",
+        "definition": {
+          "entityName": "IncidentReport",
+          "schema": {
+            "$ref": "#/backend/entities/IncidentReport"
+          },
+          "description": "Stores incident reports submitted by users. Path-based ownership for simplified security rules. The path `/users/{userId}` enforces that each user can only access their own incident reports.",
+          "params": [
+            {
+              "name": "userId",
+              "description": "The unique identifier for the user."
+            },
+            {
+              "name": "reportId",
+              "description": "The unique identifier for the incident report."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/resources/{resourceId}",
+        "definition": {
+          "entityName": "Resource",
+          "schema": {
+            "$ref": "#/backend/entities/Resource"
+          },
+          "description": "Stores information about available support resources.",
+          "params": [
+            {
+              "name": "resourceId",
+              "description": "The unique identifier for the resource."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/community_posts/{postId}",
+        "definition": {
+          "entityName": "CommunityPost",
+          "schema": {
+            "$ref": "#/backend/entities/CommunityPost"
+          },
+          "description": "Stores posts on the anonymous community board. Each post includes the userId of the creator.  Rules enforce that only the creating user or an admin can update/delete.",
+          "params": [
+            {
+              "name": "postId",
+              "description": "The unique identifier for the community post."
+            }
+          ]
+        }
+      }
+    ],
+    "reasoning": "The Firestore structure is designed to ensure Authorization Independence, DBAC, and QAPs. It leverages path-based ownership for user-specific data and denormalization to avoid `get()` calls in security rules.  Specifically, IncidentReports are stored under `/users/{userId}/incident_reports/{reportId}`, enforcing ownership and enabling secure list operations (QAPs) as rules can easily filter based on `request.auth.uid == userId`. Resources are stored in the `/resources/{resourceId}` collection, enabling global access. Community Posts are stored in the `/community_posts/{postId}` collection, and access is controlled by `request.auth.uid == resource.data.userId`. No `get()` calls are required in the security rules due to this structure, and list operations are secured."
+  }
+}
