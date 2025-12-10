@@ -217,7 +217,7 @@ export function ReportIncidentForm() {
                       className="min-h-[150px]"
                       {...field}
                     />
-FormControl>
+                  </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
