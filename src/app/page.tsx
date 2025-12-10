@@ -101,7 +101,7 @@ export default function Home() {
     <div className="flex flex-col gap-8 md:gap-12 animate-in fade-in-50">
       {heroImage && (
         <section
-          className="relative w-full h-96 rounded-lg overflow-hidden bg-cover bg-center"
+          className="relative w-full h-[420px] overflow-hidden bg-cover bg-center"
           style={{ backgroundImage: `url(${heroImage.imageUrl})` }}
           data-ai-hint={heroImage.imageHint}
         >
