@@ -121,7 +121,7 @@ export default function Home() {
       <section>
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {features.map((feature) => (
-            <Card key={feature.titleKey} className="flex flex-col transition-transform transform hover:-translate-y-1 hover:shadow-xl">
+            <Card key={feature.titleKey} className="flex flex-col transition-transform transform hover:-translate-y-1 hover:shadow-xl bg-gradient-to-r from-background to-accent/30">
               <CardHeader>
                 <div className="flex items-center gap-4">
                     <div className="bg-primary/20 p-3 rounded-lg">
