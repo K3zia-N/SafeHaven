@@ -1,3 +1,4 @@
+
 'use client';
 
 import {
@@ -189,7 +190,7 @@ export default function CommunityPage() {
 
       <div className="space-y-4 mx-auto max-w-4xl px-[30px]">
         {!isLoading && posts && posts.map(post => (
-          <Card key={post.id} className="transition-shadow hover:shadow-lg bg-gradient-to-r from-background to-accent/20">
+          <Card key={post.id} className="transition-shadow hover:shadow-lg bg-gradient-to-r from-background to-accent/30">
             <CardHeader>
               <CardTitle>{post.title}</CardTitle>
               <div className="flex items-center gap-2 text-sm text-muted-foreground">
