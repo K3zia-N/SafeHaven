@@ -31,9 +31,12 @@ import { cn } from '@/lib/utils';
 import { format } from 'date-fns';
 import { Calendar } from '@/components/ui/calendar';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { useFirebase } from '@/firebase';
+import { addDocumentNonBlocking, initiateAnonymousSignIn } from '@/firebase';
+import { collection, serverTimestamp } from 'firebase/firestore';
 
 const formSchema = z.object({
-  dateOfIncident: z.date({
+  incidentDate: z.date({
     required_error: 'A date of incident is required.',
   }),
   location: z.string().optional(),
@@ -47,16 +50,43 @@ const formSchema = z.object({
 export function ReportIncidentForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const { firestore, auth, user } = useFirebase();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
+    if (!firestore || !auth) {
+      console.error("Firebase not initialized");
+      alert("There was a problem submitting your report. Please try again later.");
+      return;
+    }
+
+    if (!user) {
+      initiateAnonymousSignIn(auth);
+      alert("You're being signed in anonymously. Please click submit again to post your report.");
+      return;
+    }
+
     setIsSubmitting(true);
-    // Simulate API call to represent submission without a real backend
-    await new Promise((resolve) => setTimeout(resolve, 1500));
-    console.log('Incident Reported:', values);
+    
+    const reportData = {
+      ...values,
+      userId: user.uid,
+      anonymous: user.isAnonymous,
+      createdAt: serverTimestamp(),
+      updatedAt: serverTimestamp(),
+    };
+
+    const reportsCollectionRef = collection(firestore, 'users', user.uid, 'incident_reports');
+    
+    // Using non-blocking add with error handling via the global emitter
+    addDocumentNonBlocking(reportsCollectionRef, reportData);
+
+    // Simulate a short delay for user feedback, as the write is async
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    
     setIsSubmitting(false);
     setIsSubmitted(true);
     form.reset();
@@ -91,7 +121,7 @@ export function ReportIncidentForm() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               <FormField
                 control={form.control}
-                name="dateOfIncident"
+                name="incidentDate"
                 render={({ field }) => (
                   <FormItem className="flex flex-col">
                     <FormLabel>Date of Incident</FormLabel>
@@ -187,7 +217,7 @@ export function ReportIncidentForm() {
                       className="min-h-[150px]"
                       {...field}
                     />
-                  </FormControl>
+FormControl>
                   <FormMessage />
                 </FormItem>
               )}
