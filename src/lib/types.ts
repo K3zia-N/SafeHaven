@@ -10,3 +10,15 @@ export interface CommunityPost {
   updatedAt: Timestamp;
   replies: number;
 }
+
+export interface IncidentReport {
+    id: string; // Firestore document ID
+    userId: string;
+    incidentType: string;
+    incidentDate: Timestamp;
+    location?: string;
+    description: string;
+    anonymous: boolean;
+    createdAt: Timestamp;
+    updatedAt: Timestamp;
+}

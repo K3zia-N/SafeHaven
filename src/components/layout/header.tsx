@@ -11,6 +11,7 @@ import {
     FileText,
     Globe,
     LogOut,
+    Files,
 } from 'lucide-react';
 
 import { Button } from "@/components/ui/button";
@@ -36,6 +37,7 @@ const navItems = [
     { href: '/', labelKey: 'dashboardTitle', icon: LayoutDashboard },
     { href: '/emergency', labelKey: 'feature_emergency', icon: ShieldAlert },
     { href: '/report-incident', labelKey: 'feature_report', icon: FileText },
+    { href: '/my-reports', labelKey: 'my_reports', icon: Files },
     { href: '/find-support', labelKey: 'feature_support', icon: HeartHandshake },
     { href: '/safe-locations', labelKey: 'feature_locations', icon: LocateFixed },
     { href: '/legal-rights', labelKey: 'feature_rights', icon: Gavel },

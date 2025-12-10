@@ -26,6 +26,7 @@ export const translations = {
     feature_community: 'Community Board',
     feature_community_desc: 'Share and connect with others in a safe, anonymous space.',
     feature_community_cta: 'Visit Board',
+    my_reports: 'My Reports',
   },
   sw: {
     dashboardTitle: 'Dashibodi',
@@ -51,6 +52,7 @@ export const translations = {
     feature_community: 'Jukwaa la Jamii',
     feature_community_desc: 'Shiriki na ungana na wengine katika nafasi salama na isiyojulikana.',
     feature_community_cta: 'Tembelea Jukwaa',
+    my_reports: 'Ripoti Zangu',
   },
   ki: {
     dashboardTitle: 'Kĩbũrũri',
@@ -76,6 +78,7 @@ export const translations = {
     feature_community: 'Kĩhaaro Kĩa Mũingĩ',
     feature_community_desc: 'Aria na ũiguane na andũ angĩ kĩhaaro-inĩ kĩrĩ na ũgitĩri na kĩa hitho.',
     feature_community_cta: 'Cera Kĩhaaro',
+    my_reports: 'Ripoti Ciakwa',
   },
 };
 
