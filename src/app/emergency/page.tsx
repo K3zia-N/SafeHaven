@@ -4,9 +4,9 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Phone, Shield } from "lucide-react";
 
 const hotlines = [
+  { name: 'Usikimye', number: '0800 720 072 (Toll-Free)', tel: '0800720072', description: 'A Kenyan-based organization providing rescue, medical, and legal support for survivors of GBV.' },
   { name: 'National Domestic Violence Hotline', number: '1-800-799-7233', tel: '18007997233', description: '24/7 confidential support for anyone experiencing domestic violence or seeking resources.' },
   { name: 'RAINN (Rape, Abuse & Incest National Network)', number: '1-800-656-4673', tel: '18006564673', description: 'The nation\'s largest anti-sexual violence organization.' },
-  { name: 'National Suicide Prevention Lifeline', number: '988', tel: '988', description: 'Free and confidential support for people in distress, prevention and crisis resources.' }
 ];
 
 const guidanceSteps = [
