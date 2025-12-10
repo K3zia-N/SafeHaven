@@ -5,7 +5,7 @@ export const translations = {
   en: {
     dashboardTitle: 'Dashboard',
     heroTitle: 'You are not alone.',
-    heroSubtitle: 'SafeHaven is a secure and anonymous platform providing support, resources, and a voice for survivors of gender-based violence.',
+    heroSubtitle: "Welcome to your safe space where your voice matters!💕",
     didYouKnow: 'Did You Know?',
     didYouKnowSubtitle: 'Insights on GBV cases in Kenya.',
     feature_report: 'Report an Incident',
