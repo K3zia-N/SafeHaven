@@ -1,9 +1,9 @@
 
+
 'use client'
 
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { Gavel, Bookmark } from "lucide-react";
 
@@ -63,17 +63,15 @@ export default function LegalRightsPage() {
                                 <AccordionTrigger className="text-lg text-left hover:no-underline group">
                                     <div className="flex justify-between items-center w-full pr-2">
                                         <span>{item.question}</span>
-                                        <Button 
-                                            variant="ghost" 
-                                            size="icon" 
-                                            className="opacity-0 group-hover:opacity-100 transition-opacity rounded-full"
+                                        <span
+                                            className="p-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity hover:bg-accent"
                                             onClick={(e) => {
                                                 e.stopPropagation(); // prevent accordion from toggling
                                                 handleSaveInfo(item);
                                             }}
                                         >
                                             <Bookmark className="size-4" />
-                                        </Button>
+                                        </span>
                                     </div>
                                 </AccordionTrigger>
                                 <AccordionContent className="text-base text-muted-foreground prose">
