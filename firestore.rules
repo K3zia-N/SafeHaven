@@ -1,112 +1,51 @@
-/**
- * Core Philosophy: This ruleset enforces a "Public Read, Anonymous Create, No Modification" model.
- * All data is intended for public consumption, and any authenticated user (including anonymous ones)
- * can contribute new data. To prevent tampering and abuse, once data is created, it cannot be
- * updated or deleted through the client SDKs.
- *
- * Data Structure: The database uses a flat structure with four top-level collections:
- * - /incident_reports: Stores anonymous reports of incidents.
- * - /resources: A public directory of support resources.
- * - /community_posts: An anonymous public message board.
- * - /safe_locations: A public directory of safe locations.
- * There are no user-specific collections or data nesting.
- *
- * Key Security Decisions:
- * - Public Read Access: All collections are publicly readable by anyone, including unauthenticated users.
- *   This supports the app's goal of providing open access to information.
- * - Anonymous Creation: Any signed-in user, including those authenticated anonymously, can create
- *   documents in any collection.
- * - Immutable Data: Updates and deletes are universally disallowed. This is a critical security
- *   decision made because the data entities lack any concept of ownership (e.g., no 'ownerId' field).
- *   Disallowing modifications is the only way to secure the data against unauthorized changes.
- *
- * Denormalization for Authorization: Not applicable. The security model is uniform across all
- * documents and does not depend on user-specific roles or relationships, eliminating the need
- * for denormalization.
- *
- * Structural Segregation: The database is well-structured, with each distinct data type
- * (incidents, resources, posts, locations) segregated into its own top-level collection. This
- * simplifies rule logic, as all documents within a collection share the same access controls.
- */
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
-    // Helper Functions
-    // =================================
-
-    /**
-     * Checks if a user is authenticated, including anonymous users.
-     */
-    function isSignedIn() {
-      return request.auth != null;
+    // Helper function to check if a user is the owner of a document.
+    function isOwner(userId) {
+      return request.auth != null && request.auth.uid == userId;
     }
 
-    // Collection Rules
-    // =================================
+    // Rules for the 'users' collection and its subcollections.
+    match /users/{userId} {
+      // Allow a user to create their own user document.
+      allow create: if isOwner(userId);
+      
+      // A user can only read or delete their own user document.
+      allow get, delete: if isOwner(userId);
 
-    /**
-     * @description Controls access to anonymous incident reports.
-     * @path /incident_reports/{incidentReportId}
-     * @allow (get) Any user, signed-in or not, can read an individual incident report.
-     * @allow (create) An anonymously signed-in user can submit a new incident report.
-     * @deny (update) No user can update an existing incident report.
-     * @principle Public Read, Anonymous Create, No Modification: Ensures reports are immutable once submitted.
-     */
-    match /incident_reports/{incidentReportId} {
-      allow get: if true;
-      allow list: if true;
-      allow create: if isSignedIn();
-      allow update: if false;
-      allow delete: if false;
+      // Rules for the 'incident_reports' subcollection.
+      match /incident_reports/{incidentReportId} {
+        // A user can create, read, and list their own incident reports.
+        allow create, get, list: if isOwner(userId);
+        
+        // Updates and deletes are disallowed to ensure immutability of reports.
+        allow update, delete: if false;
+      }
     }
 
-    /**
-     * @description Controls access to the public directory of support resources.
-     * @path /resources/{resourceId}
-     * @allow (list) Any user, signed-in or not, can list all available resources.
-     * @allow (create) A signed-in user (e.g., an admin via a backend tool) can add a new resource.
-     * @deny (delete) No user can delete a resource via the client.
-     * @principle Public Read, Anonymous Create, No Modification: Allows public discovery of resources while protecting the data's integrity.
-     */
+    // Publicly readable collection for support resources.
     match /resources/{resourceId} {
-      allow get: if true;
-      allow list: if true;
-      allow create: if isSignedIn();
-      allow update: if false;
-      allow delete: if false;
+      allow get, list: if true;
+      // Writes are disallowed from the client for security.
+      allow create, update, delete: if false;
     }
 
-    /**
-     * @description Controls access to the anonymous community discussion board.
-     * @path /community_posts/{communityPostId}
-     * @allow (list) Any user, signed-in or not, can read all community posts.
-     * @allow (create) An anonymously signed-in user can create a new post.
-     * @deny (update) A user tries to update the content of an existing post.
-     * @principle Public Read, Anonymous Create, No Modification: Fosters open, anonymous discussion while preventing posts from being altered after creation.
-     */
+    // Publicly readable collection for community posts.
+    // Writes require authentication to prevent spam.
     match /community_posts/{communityPostId} {
-      allow get: if true;
-      allow list: if true;
-      allow create: if isSignedIn();
-      allow update: if false;
-      allow delete: if false;
+      allow get, list: if true;
+      allow create: if request.auth != null;
+      // Updates and deletes are disallowed to maintain integrity.
+      allow update, delete: if false;
     }
 
-    /**
-     * @description Controls access to the public directory of safe locations.
-     * @path /safe_locations/{safeLocationId}
-     * @allow (get) Any user can look up a specific safe location.
-     * @allow (create) A signed-in user (e.g., an admin via a backend tool) can add a new safe location.
-     * @deny (delete) No user can delete a safe location via the client.
-     * @principle Public Read, Anonymous Create, No Modification: Ensures the list of safe locations is reliable and cannot be tampered with.
-     */
+    // Publicly readable collection for safe locations.
     match /safe_locations/{safeLocationId} {
-      allow get: if true;
-      allow list: if true;
-      allow create: if isSignedIn();
-      allow update: if false;
-      allow delete: if false;
+      allow get, list: if true;
+      // Writes are disallowed from the client for security.
+      allow create, update, delete: if false;
     }
   }
 }

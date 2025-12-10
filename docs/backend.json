@@ -196,14 +196,18 @@
   "firestore": {
     "structure": [
       {
-        "path": "/incident_reports/{incidentReportId}",
+        "path": "/users/{userId}/incident_reports/{incidentReportId}",
         "definition": {
           "entityName": "IncidentReport",
           "schema": {
             "$ref": "#/backend/entities/IncidentReport"
           },
-          "description": "Stores anonymous incident reports. No authorization beyond validation is required.",
+          "description": "Stores anonymous incident reports for a specific user.",
           "params": [
+            {
+              "name": "userId",
+              "description": "The unique ID of the user."
+            },
             {
               "name": "incidentReportId",
               "description": "Unique identifier for the incident report."
@@ -260,6 +264,6 @@
         }
       }
     ],
-    "reasoning": "The Firestore data structure is designed to support SafeHaven's core features while adhering to the principles of Authorization Independence, Structural Segregation, and Access Modeling.  \n\n1.  **Incident Reports:** Incident reports are stored anonymously and globally accessible for analysis but not individually identifiable.  No specific authorization is required beyond basic validation.\n2.  **Resources:** Resources are stored globally and are publicly accessible. No specific authorization beyond validation is required.\n3.  **Community Posts:** Community posts are stored globally and are publicly accessible. No specific authorization beyond validation is required.\n4.  **Safe Locations:** Safe locations are stored globally and are publicly accessible. No specific authorization beyond validation is required.\n\nThis structure ensures that security rules are simple and maintainable, focusing on data validation rather than complex access control logic. Because all data is globally accessible, authorization independence is implicitly achieved; there is no need for denormalization.\n\nThe QAPs are addressed via Structural Segregation: each type of data (incident reports, resources, community posts, safe locations) is stored in its own collection, and all documents within a collection share the same security requirements (public read access, restricted write access).\n"
+    "reasoning": "The Firestore data structure is designed to support SafeHaven's core features. Incident reports are now stored in a subcollection under each user to ensure that only the user who created them can access them, enforcing privacy. All other collections (resources, community_posts, safe_locations) remain at the top level and are publicly accessible to ensure information is widely available. This hybrid model balances privacy for sensitive data with open access for public resources."
   }
 }
