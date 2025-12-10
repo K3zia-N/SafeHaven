@@ -101,10 +101,16 @@ export default function Home() {
     <div className="flex flex-col gap-8 md:gap-12 animate-in fade-in-50">
       {heroImage && (
         <section
-          className="relative w-full h-[420px] overflow-hidden bg-cover bg-center"
-          style={{ backgroundImage: `url(${heroImage.imageUrl})` }}
-          data-ai-hint={heroImage.imageHint}
+          className="relative w-full h-[420px] overflow-hidden"
         >
+          <Image
+            src={heroImage.imageUrl}
+            alt={heroImage.description}
+            fill
+            className="object-cover"
+            data-ai-hint={heroImage.imageHint}
+            priority
+          />
           <div className="absolute inset-0 bg-black/50" />
           <div className="relative h-full flex flex-col justify-center items-center p-6 md:p-8 text-white text-center">
             <h1 className="text-4xl md:text-5xl font-bold tracking-tight">{t('heroTitle')}</h1>
