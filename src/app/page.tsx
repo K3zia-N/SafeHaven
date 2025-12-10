@@ -2,6 +2,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { ArrowRight, HeartHandshake, ShieldAlert, Gavel, Users, FileText, LocateFixed } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/card';
@@ -16,6 +17,7 @@ import { useState, useEffect, useRef } from 'react';
 import Autoplay from "embla-carousel-autoplay"
 import { useLoading } from '@/components/layout/loading-provider';
 import { useLanguage } from '@/components/layout/language-provider';
+import { PlaceHolderImages } from '@/lib/placeholder-images';
 
 
 const features = [
@@ -77,6 +79,7 @@ export default function Home() {
   );
   const { setIsLoading } = useLoading();
   const { t } = useLanguage();
+  const heroImage = PlaceHolderImages.find(p => p.id === 'hero-section');
 
   const handleLinkClick = (href: string) => {
     if (href !== window.location.pathname) {
@@ -95,12 +98,25 @@ export default function Home() {
   
   return (
     <div className="flex flex-col gap-8 md:gap-12 animate-in fade-in-50">
-        <section className="text-center py-8">
-            <h1 className="text-4xl md:text-5xl font-bold tracking-tight">{t('heroTitle')}</h1>
-            <p className="mt-4 max-w-2xl mx-auto text-lg text-muted-foreground">
+        
+      <section className="relative w-full h-80 rounded-lg overflow-hidden">
+        {heroImage && (
+            <Image
+                src={heroImage.imageUrl}
+                alt={heroImage.description}
+                fill
+                className="object-cover"
+                priority
+                data-ai-hint={heroImage.imageHint}
+            />
+        )}
+        <div className="absolute inset-0 bg-black/50 flex flex-col items-center justify-center text-center">
+            <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-white">{t('heroTitle')}</h1>
+            <p className="mt-4 max-w-2xl mx-auto text-lg text-primary-foreground/90">
               {t('heroSubtitle')}
             </p>
-        </section>
+        </div>
+      </section>
 
       <section>
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
