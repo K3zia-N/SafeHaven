@@ -4,7 +4,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
 import { CalendarIcon, Check, Loader2 } from 'lucide-react';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -32,9 +32,8 @@ import { format } from 'date-fns';
 import { Calendar } from '@/components/ui/calendar';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { useFirebase } from '@/firebase';
-import { addDoc } from 'firebase/firestore';
-import { collection, serverTimestamp } from 'firebase/firestore';
-import { initiateAnonymousSignIn } from '@/firebase/non-blocking-login';
+import { addDoc, collection, serverTimestamp } from 'firebase/firestore';
+import { signInAnonymously, User } from 'firebase/auth';
 import { useToast } from '@/hooks/use-toast';
 
 const formSchema = z.object({
@@ -52,7 +51,7 @@ const formSchema = z.object({
 export function ReportIncidentForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
-  const { firestore, auth, user, isUserLoading } = useFirebase();
+  const { firestore, auth, user: currentUser, isUserLoading } = useFirebase();
   const { toast } = useToast();
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -64,13 +63,23 @@ export function ReportIncidentForm() {
     },
   });
 
-  // Effect to handle anonymous user sign-in and resubmission
-  useEffect(() => {
-    // If we have a user now, and we were trying to submit, try submitting again.
-    if (user && isSubmitting && form.formState.isSubmitting) {
-      form.handleSubmit(onSubmit)();
+  async function getOrGreateAnonymousUser(): Promise<User | null> {
+    if (currentUser) {
+      return currentUser;
     }
-  }, [user, isSubmitting]);
+    if (auth) {
+      try {
+        toast({ title: "First-time Report", description: "Creating a secure anonymous session for you..."});
+        const userCredential = await signInAnonymously(auth);
+        return userCredential.user;
+      } catch (error) {
+        console.error("Anonymous sign-in failed:", error);
+        toast({ variant: 'destructive', title: 'Session Failed', description: 'Could not create a secure session. Please try again.' });
+        return null;
+      }
+    }
+    return null;
+  }
 
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
@@ -81,36 +90,33 @@ export function ReportIncidentForm() {
 
     setIsSubmitting(true);
 
-    // If there's no user and auth is not loading, initiate sign-in
-    if (!user && !isUserLoading) {
-      initiateAnonymousSignIn(auth);
-      // Let the useEffect handle the resubmission once the user is available.
-      toast({ title: "First-time Report", description: "Creating a secure anonymous session for you. Please wait..."});
-      // We keep isSubmitting true, so the useEffect knows to re-trigger.
-      return;
-    }
-    
-    // If there is a user, proceed to submit the document
-    if (user) {
-        try {
-            const reportData = {
-                ...values,
-                userId: user.uid,
-                anonymous: user.isAnonymous,
-                createdAt: serverTimestamp(),
-                updatedAt: serverTimestamp(),
-            };
-            const reportsCollectionRef = collection(firestore, 'users', user.uid, 'incident_reports');
-            await addDoc(reportsCollectionRef, reportData);
-            
-            setIsSubmitted(true);
-            form.reset();
-        } catch (error) {
-            console.error("Error submitting report:", error);
-            toast({ variant: 'destructive', title: 'Submission Failed', description: 'There was an error submitting your report. Please try again.' });
-        } finally {
-            setIsSubmitting(false);
-        }
+    try {
+      const user = await getOrGreateAnonymousUser();
+
+      if (!user) {
+        // Error is already toasted in the function above
+        setIsSubmitting(false);
+        return;
+      }
+      
+      const reportData = {
+          ...values,
+          userId: user.uid,
+          anonymous: user.isAnonymous,
+          createdAt: serverTimestamp(),
+          updatedAt: serverTimestamp(),
+      };
+      const reportsCollectionRef = collection(firestore, 'users', user.uid, 'incident_reports');
+      await addDoc(reportsCollectionRef, reportData);
+      
+      setIsSubmitted(true);
+      form.reset();
+
+    } catch (error) {
+        console.error("Error submitting report:", error);
+        toast({ variant: 'destructive', title: 'Submission Failed', description: 'There was an error submitting your report. Please try again.' });
+    } finally {
+        setIsSubmitting(false);
     }
   }
   
